@@ -1,0 +1,11 @@
+node_modules/
+.env
+.env.*
+!.env.example
+
+# #Esto hará que Git no suba:
+
+# node_modules → dependencias instaladas.
+# .env → donde posteriormente tendremos contraseñas, claves de API, etc.
+
+# Y permitiremos un .env.example, que nos servirá para indicar qué variables necesita el proyecto sin revelar sus valores reales.
