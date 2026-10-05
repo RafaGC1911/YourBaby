@@ -1,5 +1,5 @@
 //Importar express para usarlo
-const express = require('express');
+let express = require('express');
 
 /*
 Importar CORS (Cross-Origin Resource Sharing o Compartimento de Recursos entre Orígenes Distintos). 
@@ -8,10 +8,11 @@ Se usa para que el navegador no bloquee las peticiones que React haga al servido
 El navegador las bloquea a modo de protección ya que React y Express corren en puertos distintos y el navegador en principio 
 esto lo entiende como malicioso.
 */
-const cors = require("cors");
+let cors = require("cors");
 
-//Crear aplicacion Express. La constante app será el objeto principal con el que configurar el servidor
-const app = express();
+
+//Crear aplicacion Express. La variable app será el objeto principal con el que configurar el servidor
+let app = express();
 
 /*
 Elegimos el puerto donde escuchará nuestro servidor.
@@ -20,7 +21,7 @@ Por ahora será:
 
 http://localhost:3000
 */
-const port = 3000;
+let port = 3000;
 
 
 app.use(cors());
@@ -32,21 +33,14 @@ app.use(express.json());
 
 /******* RUTAS ******** */
 
-//Importar el archivos  para usar las rutas
-const apiRouter = require('./rutas/api');
 
-const babiesRouter = require('./rutas/bebes_rutas');
 
-/**
- * Decirle a Express que todas las rutas que gestione apiRouter empezarán por /api
- * 
- *  */ 
-app.use('/api', apiRouter);
+let babiesRouter = require('./rutas/bebes_rutas');
+
+
 
 //Todas las peticiones que empiecen por /api/bebes las va a gestionar babiesRouter
 app.use('/api/bebes', babiesRouter);
-
-
 
 
 

@@ -1,19 +1,19 @@
 //Importar la librería Express para tener acceso a sus funciones.
-const express = require("express");
+let express = require("express");
 
 /**
  * Crear un mini-servidor aislado (un enrutador). 
  * Este objeto router funciona de forma muy parecida a app, permitiéndote definir peticiones GET, POST, PUT, DELETE, etc.
  */
-const router = express.Router();
+let router = express.Router();
 
-const {
+let {
   obtenerBebes,
-  crearBebe,
+  guardarBebe,
 } = require("../controladores/bebes_controlador");
 
 router.get("/", obtenerBebes);
-router.post("/", crearBebe);
+router.post("/", guardarBebe);
 
 
 /**
