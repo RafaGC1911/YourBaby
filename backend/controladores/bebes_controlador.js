@@ -1,12 +1,13 @@
 let {
   crearBebe,
   obtenerBebes: obtenerBebesModelo, //Esto se hace para importar la función obtenerBebes, pero en este archivo se va a llamar obtenerBebesModelo.
-  //De esta forma puedo tener en este archivo el mismo nombre de función
+  //De esta forma puedo tener en este archivo el mismo nombre de función.
+  obtenerBebeId: obtenerBebeIdModelo,
 } = require("../modelos/bebes_modelo");
 
 let obtenerBebes = async (req, res) => {
   try {
-    let [bebes] = await obtenerBebesModelo();/**
+    let [bebes] = await obtenerBebesModelo(); /**
     Obtener la primera posición del array que devuelve la función. Esta es la que trae la información que quiero
     */
     res.json({
@@ -17,6 +18,28 @@ let obtenerBebes = async (req, res) => {
     console.error(error);
     res.status(500).json({
       message: "Error al intentar obtener la lista de bebés",
+    });
+  }
+};
+
+let obtenerBebeId = async (req, res) => {
+  try {
+    let [bebes] = await obtenerBebeIdModelo(req.params.id);
+
+    if (bebes.length === 0) {
+      return res.status(404).json({
+        message: "Bebé no encontrado",
+      });
+    }
+
+    res.json({
+      message: "Bebé obtenido correctamente",
+      data: bebes[0],
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error al obtener el bebé",
     });
   }
 };
@@ -50,4 +73,5 @@ let guardarBebe = async (req, res) => {
 module.exports = {
   obtenerBebes,
   guardarBebe,
+  obtenerBebeId,
 };

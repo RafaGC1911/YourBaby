@@ -27,4 +27,9 @@ let obtenerBebes = () => {
   return conexion.promise().query(sql);
 };
 
-module.exports = { crearBebe, obtenerBebes };
+let obtenerBebeId = (id) => {
+  let sql = `SELECT * FROM bebes WHERE id = ?`;
+  return conexion.promise().query(sql, [id]);
+};
+
+module.exports = { crearBebe, obtenerBebes, obtenerBebeId };
