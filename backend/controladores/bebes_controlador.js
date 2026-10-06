@@ -4,6 +4,7 @@ let {
   //De esta forma puedo tener en este archivo el mismo nombre de función.
   obtenerBebeId: obtenerBebeIdModelo,
   actualizarBebe: actualizarBebeModelo,
+  eliminarBebe: eliminarBebeModelo
 } = require("../modelos/bebes_modelo");
 
 let obtenerBebes = async (req, res) => {
@@ -93,9 +94,32 @@ let actualizarBebe = async (req, res) => {
   }
 };
 
+let eliminarBebe = async (req, res)=>{
+  try {
+    let [resultado] = await eliminarBebeModelo(req.params.id);
+
+    if(resultado.affectedRows === 0){
+      return res.status(404).json({
+        message: "Bebé no encontrado"
+      });
+    }
+
+    res.json({
+      message: "Bebé eliminado correctamente"
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Error al eliminar el bebé"
+    });
+  }
+}
+
 module.exports = {
   obtenerBebes,
   guardarBebe,
   obtenerBebeId,
   actualizarBebe,
+  eliminarBebe
 };

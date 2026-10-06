@@ -46,4 +46,9 @@ let actualizarBebe = (id, bebe) => {
     .query(sql, [bebe.nombre, bebe.fecha_nacimiento, bebe.peso_nacimiento, id]);
 };
 
-module.exports = { crearBebe, obtenerBebes, obtenerBebeId, actualizarBebe };
+let eliminarBebe = (id)=>{
+  let sql = `DELETE FROM bebes WHERE id = ?`;
+  return conexion.promise().query(sql, [id]);
+}
+
+module.exports = { crearBebe, obtenerBebes, obtenerBebeId, actualizarBebe, eliminarBebe };

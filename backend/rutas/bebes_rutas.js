@@ -11,13 +11,15 @@ let {
   obtenerBebes,
   guardarBebe,
   obtenerBebeId,
-  actualizarBebe
+  actualizarBebe,
+  eliminarBebe
 } = require("../controladores/bebes_controlador");
 
 router.get("/", obtenerBebes);
 router.post("/", guardarBebe);
 router.get("/:id",obtenerBebeId);
 router.put("/:id",actualizarBebe);
+router.delete("/:id", eliminarBebe);
 
 
 /**
