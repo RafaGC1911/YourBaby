@@ -32,4 +32,18 @@ let obtenerBebeId = (id) => {
   return conexion.promise().query(sql, [id]);
 };
 
-module.exports = { crearBebe, obtenerBebes, obtenerBebeId };
+let actualizarBebe = (id, bebe) => {
+  let sql = `
+  UPDATE bebes
+  SET
+      nombre = ?,
+      fecha_nacimiento = ?,
+      peso_nacimiento = ?
+      WHERE id = ?`;
+
+  return conexion
+    .promise()
+    .query(sql, [bebe.nombre, bebe.fecha_nacimiento, bebe.peso_nacimiento, id]);
+};
+
+module.exports = { crearBebe, obtenerBebes, obtenerBebeId, actualizarBebe };

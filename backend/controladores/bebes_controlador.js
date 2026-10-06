@@ -3,6 +3,7 @@ let {
   obtenerBebes: obtenerBebesModelo, //Esto se hace para importar la función obtenerBebes, pero en este archivo se va a llamar obtenerBebesModelo.
   //De esta forma puedo tener en este archivo el mismo nombre de función.
   obtenerBebeId: obtenerBebeIdModelo,
+  actualizarBebe: actualizarBebeModelo,
 } = require("../modelos/bebes_modelo");
 
 let obtenerBebes = async (req, res) => {
@@ -70,8 +71,31 @@ let guardarBebe = async (req, res) => {
   }
 };
 
+let actualizarBebe = async (req, res) => {
+  try {
+    let [resultado] = await actualizarBebeModelo(req.params.id, req.body); //Pasarle el id para saber qué bebé hay que actualizar y req.body para decir qué datos act
+
+    if (resultado.affectedRows === 0) {
+      //Si no hay ninguna fila afectada en el update quiere decir que no existe el id que nos pasan
+      return res.status(404).json({
+        message: "Bebé no encontrado",
+      });
+    }
+
+    res.json({
+      message: "Bebé actualizado correctamente",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error al actualizar al bebé",
+    });
+  }
+};
+
 module.exports = {
   obtenerBebes,
   guardarBebe,
   obtenerBebeId,
+  actualizarBebe,
 };

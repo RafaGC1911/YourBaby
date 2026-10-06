@@ -10,12 +10,14 @@ let router = express.Router();
 let {
   obtenerBebes,
   guardarBebe,
-  obtenerBebeId
+  obtenerBebeId,
+  actualizarBebe
 } = require("../controladores/bebes_controlador");
 
 router.get("/", obtenerBebes);
 router.post("/", guardarBebe);
 router.get("/:id",obtenerBebeId);
+router.put("/:id",actualizarBebe);
 
 
 /**
