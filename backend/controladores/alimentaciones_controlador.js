@@ -1,6 +1,7 @@
 let {
   crearAlimentacion,
   obtenerAlimentaciones: obtenerAlimentacionesModelo,
+  obtenerAlimentacionesPorBebe: obtenerAlimentacionesPorBebeModelo,
 } = require("../modelos/alimentaciones_modelo");
 
 let guardarAlimentacion = async (req, res) => {
@@ -37,4 +38,24 @@ let obtenerAlimentaciones = async (req, res) => {
   }
 };
 
-module.exports = { guardarAlimentacion, obtenerAlimentaciones };
+let obtenerAlimentacionesPorBebe = async (req, res) => {
+  try {
+    let bebeId = req.params.bebeId;
+    let [alimentaciones] = await obtenerAlimentacionesPorBebeModelo(bebeId);
+    res.json({
+      message: "Alimentaciones del bebé obtenidas correctamente",
+      data: alimentaciones,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error al obtener las alimentaciones del bebé"
+    })
+  }
+};
+
+module.exports = { 
+  guardarAlimentacion,
+  obtenerAlimentaciones,
+  obtenerAlimentacionesPorBebe
+ };

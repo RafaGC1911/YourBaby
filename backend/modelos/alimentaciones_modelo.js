@@ -23,7 +23,17 @@ let obtenerAlimentaciones = () => {
   return conexion.promise().query(sql);
 };
 
+let obtenerAlimentacionesPorBebe = (bebeId) =>{
+  let sql = `
+  SELECT * FROM alimentaciones
+  WHERE bebe_id = ?
+  `;
+
+  return conexion.promise().query(sql, [bebeId]);
+}
+
 module.exports = {
   crearAlimentacion,
   obtenerAlimentaciones,
+  obtenerAlimentacionesPorBebe
 };
