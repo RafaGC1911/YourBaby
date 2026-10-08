@@ -18,4 +18,12 @@ let crearAlimentacion = (alimentacion) => {
     ]);
 };
 
-module.exports = { crearAlimentacion };
+let obtenerAlimentaciones = () => {
+  let sql = `SELECT * FROM alimentaciones`;
+  return conexion.promise().query(sql);
+};
+
+module.exports = {
+  crearAlimentacion,
+  obtenerAlimentaciones,
+};
