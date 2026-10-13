@@ -33,12 +33,15 @@ let bebesRutas = require("./rutas/bebes_rutas");
 let alimentacionesRutas = require("./rutas/alimentaciones_rutas");
 let suenosRutas = require("./rutas/suenos_rutas");
 let panalesRutas = require("./rutas/panales_rutas");
+let pesosRutas = require("./rutas/pesos_rutas");
 
 //Todas las peticiones que empiecen por /api/bebes las va a gestionar bebesRutas
 app.use("/api/bebes", bebesRutas);
 app.use("/api/alimentaciones", alimentacionesRutas);
 app.use("/api/suenos", suenosRutas);
 app.use("/api/panales", panalesRutas);
+app.use("/api/pesos", pesosRutas);
+
 
 /******* ESCUCHA ***** */
 
