@@ -35,14 +35,16 @@ app.use(express.json());
 
 
 
-let babiesRouter = require('./rutas/bebes_rutas');
-let alimentacionesRouter = require('./rutas/alimentaciones_rutas');
+let bebesRutas = require('./rutas/bebes_rutas');
+let alimentacionesRutas = require('./rutas/alimentaciones_rutas');
+let suenosRutas = require('./rutas/suenos.rutas');
 
 
 
-//Todas las peticiones que empiecen por /api/bebes las va a gestionar babiesRouter
-app.use('/api/bebes', babiesRouter);
-app.use('/api/alimentaciones', alimentacionesRouter);
+//Todas las peticiones que empiecen por /api/bebes las va a gestionar bebesRutas
+app.use('/api/bebes', bebesRutas);
+app.use('/api/alimentaciones', alimentacionesRutas);
+app.use('/api/suenos', suenosRutas);
 
 
 
