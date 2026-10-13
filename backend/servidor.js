@@ -1,5 +1,5 @@
 //Importar express para usarlo
-let express = require('express');
+let express = require("express");
 
 /*
 Importar CORS (Cross-Origin Resource Sharing o Compartimento de Recursos entre Orígenes Distintos). 
@@ -9,7 +9,6 @@ El navegador las bloquea a modo de protección ya que React y Express corren en 
 esto lo entiende como malicioso.
 */
 let cors = require("cors");
-
 
 //Crear aplicacion Express. La variable app será el objeto principal con el que configurar el servidor
 let app = express();
@@ -23,35 +22,27 @@ http://localhost:3000
 */
 let port = 3000;
 
-
 app.use(cors());
 
 //express.json() es un middleware de Express, su función es hacer que el servidor pueda entender datos que llegan en formato JSON dentro de una petición HTTP
 app.use(express.json());
 
-
-
 /******* RUTAS ******** */
 
-
-
-let bebesRutas = require('./rutas/bebes_rutas');
-let alimentacionesRutas = require('./rutas/alimentaciones_rutas');
-let suenosRutas = require('./rutas/suenos.rutas');
-
-
+let bebesRutas = require("./rutas/bebes_rutas");
+let alimentacionesRutas = require("./rutas/alimentaciones_rutas");
+let suenosRutas = require("./rutas/suenos_rutas");
+let panalesRutas = require("./rutas/panales_rutas");
 
 //Todas las peticiones que empiecen por /api/bebes las va a gestionar bebesRutas
-app.use('/api/bebes', bebesRutas);
-app.use('/api/alimentaciones', alimentacionesRutas);
-app.use('/api/suenos', suenosRutas);
-
-
+app.use("/api/bebes", bebesRutas);
+app.use("/api/alimentaciones", alimentacionesRutas);
+app.use("/api/suenos", suenosRutas);
+app.use("/api/panales", panalesRutas);
 
 /******* ESCUCHA ***** */
 
 //Poner a express a escuchar en el puerto que le diga (3000 en este caso)
-app.listen(port, ()=>{
+app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
-
