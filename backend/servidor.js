@@ -38,13 +38,14 @@ app.use(express.json());
 let bebesRutas = require('./rutas/bebes_rutas');
 let alimentacionesRutas = require('./rutas/alimentaciones_rutas');
 let suenosRutas = require('./rutas/suenos.rutas');
-
+let panalesRutas = require('./rutas/panales.rutas')
 
 
 //Todas las peticiones que empiecen por /api/bebes las va a gestionar bebesRutas
 app.use('/api/bebes', bebesRutas);
 app.use('/api/alimentaciones', alimentacionesRutas);
 app.use('/api/suenos', suenosRutas);
+app.use('/api/panales', panalesRutas);
 
 
 
