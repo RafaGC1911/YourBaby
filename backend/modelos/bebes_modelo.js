@@ -33,22 +33,40 @@ let obtenerBebeId = (id) => {
 };
 
 let actualizarBebe = (id, bebe) => {
-  let sql = `
-  UPDATE bebes
-  SET
-      nombre = ?,
-      fecha_nacimiento = ?,
-      peso_nacimiento = ?
-      WHERE id = ?`;
+  let campos = [];
+  let valores = [];
 
-  return conexion
-    .promise()
-    .query(sql, [bebe.nombre, bebe.fecha_nacimiento, bebe.peso_nacimiento, id]);
+  if (bebe.nombre !== undefined) {
+    campos.push("nombre = ?");
+    valores.push(bebe.nombre);
+  }
+
+  if (bebe.fecha_nacimiento !== undefined) {
+    campos.push("fecha_nacimiento = ?");
+    valores.push(bebe.fecha_nacimiento);
+  }
+
+  if (bebe.peso_nacimiento !== undefined) {
+    campos.push("peso_nacimiento = ?");
+    valores.push(bebe.peso_nacimiento);
+  }
+
+  let sql = `UPDATE bebes SET ${campos.join(", ")} WHERE id = ? `;
+
+  valores.push(id);
+
+  return conexion.promise().query(sql, valores);
 };
 
-let eliminarBebe = (id)=>{
+let eliminarBebe = (id) => {
   let sql = `DELETE FROM bebes WHERE id = ?`;
   return conexion.promise().query(sql, [id]);
-}
+};
 
-module.exports = { crearBebe, obtenerBebes, obtenerBebeId, actualizarBebe, eliminarBebe };
+module.exports = {
+  crearBebe,
+  obtenerBebes,
+  obtenerBebeId,
+  actualizarBebe,
+  eliminarBebe,
+};

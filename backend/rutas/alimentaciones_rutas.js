@@ -13,6 +13,6 @@ router.post("/", guardarAlimentacion);
 router.get("/", obtenerAlimentaciones);
 router.get("/bebe/:bebeId", obtenerAlimentacionesPorBebe);
 router.patch("/:id", actualizarAlimentacion);
-router.delete("/:id", eliminarAlimentacion)
+router.delete("/:id", eliminarAlimentacion);
 
 module.exports = router;
