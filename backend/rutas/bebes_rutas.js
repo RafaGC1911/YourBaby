@@ -18,7 +18,7 @@ let {
 router.get("/", obtenerBebes);
 router.post("/", guardarBebe);
 router.get("/:id",obtenerBebeId);
-router.put("/:id",actualizarBebe);
+router.patch("/:id",actualizarBebe);
 router.delete("/:id", eliminarBebe);
 
 

@@ -6,21 +6,54 @@ let {
   eliminarSueno: eliminarSuenoModelo,
 } = require("../modelos/suenos_modelo");
 
+//Comprobar que el ID sea un número entero positivo
+let validarId = (id) => {
+  return Number.isInteger(Number(id)) && Number(id) > 0;
+};
+
+// Comprobar que una fecha y hora tengan un formato válido
+let validarFecha = (fecha) => {
+  if (typeof fecha !== "string" || fecha.trim() === "") {//Comprobar que sea una cadena y que el usuario no introduzca "   " que las puede dar por buenas
+    return false;
+  }
+
+  let valorFecha = new Date(fecha);
+
+  return !isNaN(valorFecha.getTime());//Si la fecha es inválida (un número o un "hola" por ejemplo), getTime() va a devolver NaN
+};
+
 let guardarSueno = async (req, res) => {
   try {
-    let { bebe_id, inicio } = req.body; //Extrae los valores directamente (id e inicio) en estas dos variables en vez de hacer dos if para cada condición
+    let {bebe_id, inicio} = req.body;
 
-    if (!bebe_id || !inicio) {
+    //Comprobar los campos obligatorios
+    if (!validarId(bebe_id) || !validarFecha(inicio)) {
       return res.status(400).json({
-        message: "El bebé y la hora de inicio son obligatorios",
+        message: "Debes indicar un bebé válido y una hora de inicio válida",
       });
     }
 
+    let fin = req.body.fin ?? null;
+
+    //Comprobar la fecha de finalización si se ha indicado
+    if (fin !== null && !validarFecha(fin)) {
+      return res.status(400).json({
+        message: "La hora de finalización no es válida",
+      });
+    }
+
+    //La hora de finalización no puede ser anterior a la de inicio
+    if (fin !== null && new Date(fin) < new Date(inicio)) {
+      return res.status(400).json({
+        message: "La hora de finalización no puede ser anterior al inicio",
+      });
+    }
+
+    //Preparar los datos que se guardarán en la base de datos
     let sueno = {
-      bebe_id,
+      bebe_id: Number(bebe_id),
       inicio,
-      fin: req.body.fin ?? null, // El ?? significa que utilizamos null si el valor de la izquierda es null o undefined.
-      //Con esto se consigue no enviar undefined a MySQL si un periodo de sueño no tiene hora de finalización y las observaciones son opcionales
+      fin,
       observaciones: req.body.observaciones ?? null,
     };
 
@@ -42,7 +75,6 @@ let guardarSueno = async (req, res) => {
   }
 };
 
-
 let obtenerSuenos = async (req, res) => {
   try {
     let [suenos] = await obtenerSuenosModelo();
@@ -60,10 +92,16 @@ let obtenerSuenos = async (req, res) => {
   }
 };
 
-
 let obtenerSuenosPorBebe = async (req, res) => {
   try {
     let bebeId = req.params.bebeId;
+
+    //Comprobar que el ID del bebé sea válido
+    if (!validarId(bebeId)) {
+      return res.status(400).json({
+        message: "El ID del bebé no es válido",
+      });
+    }
 
     let [suenos] = await obtenerSuenosPorBebeModelo(bebeId);
 
@@ -80,19 +118,81 @@ let obtenerSuenosPorBebe = async (req, res) => {
   }
 };
 
-
 let actualizarSueno = async (req, res) => {
   try {
     let id = req.params.id;
     let sueno = req.body ?? {};
 
-    if (Object.keys(sueno).length === 0) {//Controlar que no me manden objeto vacío
+    //Comprobar que el ID del sueño sea válido
+    if (!validarId(id)) {
       return res.status(400).json({
-        message: "Debes enviar al menos un campo para actualizar",
+        message: "El ID del sueño no es válido",
       });
     }
 
-    let [resultado] = await actualizarSuenoModelo(id, sueno);
+    //Definir los campos que se pueden modificar
+    let camposPermitidos = ["inicio", "fin", "observaciones"];
+    let datosActualizados = {};
+
+    //Guardar únicamente los campos enviados
+    for (let campo of camposPermitidos) {
+      if (sueno[campo] !== undefined) {
+        datosActualizados[campo] = sueno[campo];
+      }
+    }
+
+    // Comprobar que haya al menos un campo válido
+    if (Object.keys(datosActualizados).length === 0) {
+      return res.status(400).json({
+        message: "Debes enviar al menos un campo válido para actualizar",
+      });
+    }
+
+    //Validar la fecha de inicio si se quiere modificar
+    if (
+      datosActualizados.inicio !== undefined &&
+      !validarFecha(datosActualizados.inicio)
+    ) {
+      return res.status(400).json({
+        message: "La hora de inicio no es válida",
+      });
+    }
+
+    //Validar la fecha de fin si se quiere modificar
+    if (
+      datosActualizados.fin !== undefined &&
+      datosActualizados.fin !== null &&
+      !validarFecha(datosActualizados.fin)
+    ) {
+      return res.status(400).json({
+        message: "La hora de finalización no es válida",
+      });
+    }
+
+    //Si se envían las dos fechas, comprobar que tengan un orden correcto
+    if (
+      datosActualizados.inicio !== undefined &&
+      datosActualizados.fin !== undefined &&
+      datosActualizados.fin !== null &&
+      new Date(datosActualizados.fin) < new Date(datosActualizados.inicio)
+    ) {
+      return res.status(400).json({
+        message: "La hora de finalización no puede ser anterior al inicio",
+      });
+    }
+
+    //Comprobar que las observaciones sean texto
+    if (
+      datosActualizados.observaciones !== undefined &&
+      datosActualizados.observaciones !== null &&
+      typeof datosActualizados.observaciones !== "string"
+    ) {
+      return res.status(400).json({
+        message: "Las observaciones deben ser un texto",
+      });
+    }
+
+    let [resultado] = await actualizarSuenoModelo(id, datosActualizados);
 
     if (resultado.affectedRows === 0) {
       return res.status(404).json({
@@ -112,10 +212,16 @@ let actualizarSueno = async (req, res) => {
   }
 };
 
-
 let eliminarSueno = async (req, res) => {
   try {
     let id = req.params.id;
+
+    //Comprobar que el ID sea válido
+    if (!validarId(id)) {
+      return res.status(400).json({
+        message: "El ID del sueño no es válido",
+      });
+    }
 
     let [resultado] = await eliminarSuenoModelo(id);
 
