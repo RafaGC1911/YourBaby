@@ -4,8 +4,29 @@ import TarjetaBebe from "./componentes/TarjetaBebe.jsx";
 import FormularioBebe from "./componentes/FormularioBebe.jsx";
 
 function App() {
+  //bebes contiene la lista actual, setBebes sirve para actualizar esa lista.
   let [bebes, setBebes] = useState([]);
   let [mensaje, setMensaje] = useState("Cargando bebés...");
+
+
+
+  //Volver a cargar los bebés después de registrar uno nuevo.
+
+  let actualizarBebes = async ()=>{
+    try {
+      let response = await fetch("http://localhost:3000/api/bebes");
+
+      if(!response.ok){
+        throw new Error("No se pudieron actualizar los bebés");
+      }
+
+      let responseData = await response.json();
+
+      setBebes(responseData.data);
+    } catch (error) {
+      setMensaje(`Error al actualizar los bebés ${error.message}`);
+    }
+  }
 
   useEffect(() => {
     async function obtenerBebes() {
@@ -35,7 +56,7 @@ function App() {
     <div>
       <Cabecera />
 
-      <FormularioBebe/>
+      <FormularioBebe alRegistrar = {actualizarBebes}/>  {/*Pasar una prop con la función para actualizar la lista al registrar un nuevo bebé*/}
 
       <h2>Bebés registrados</h2>
 

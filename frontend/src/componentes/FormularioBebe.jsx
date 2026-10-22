@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function FormularioBebe() {
+function FormularioBebe(props) {
   let [nombre, setNombre] = useState("");
   let [fechaNacimiento, setFechaNacimiento] = useState("");
   let [pesoNacimiento, setPesoNacimiento] = useState("");
@@ -29,7 +29,9 @@ function FormularioBebe() {
         throw new Error(responseData.message || "No se pudo registrar el bebé");
       }
 
-      console.log("Bebé registrado:", responseData);
+      //Avisamos a App de que el bebé se ha registrado correctamente par aque actualice la lista en pantalla
+      props.alRegistrar();
+
     } catch (error) {
       console.error("Error al registrar el bebé:", error);
     }
