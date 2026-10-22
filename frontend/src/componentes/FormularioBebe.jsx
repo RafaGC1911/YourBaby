@@ -4,6 +4,7 @@ function FormularioBebe(props) {
   let [nombre, setNombre] = useState("");
   let [fechaNacimiento, setFechaNacimiento] = useState("");
   let [pesoNacimiento, setPesoNacimiento] = useState("");
+  let [mensaje, setMensaje] = useState("");
 
   let gestionarEnvio = async (e) => {
     e.preventDefault();
@@ -32,6 +33,16 @@ function FormularioBebe(props) {
       //Avisamos a App de que el bebé se ha registrado correctamente par aque actualice la lista en pantalla
       props.alRegistrar();
 
+      //Mostrar mensaje de éxito
+      setMensaje(`Se ha registrado a ${nombre} correctamente.`); 
+
+      //Limpiar campos del formulario al enviar los datos
+      setNombre("");
+      setFechaNacimiento("");
+      setPesoNacimiento("");
+
+      
+
     } catch (error) {
       console.error("Error al registrar el bebé:", error);
     }
@@ -40,6 +51,9 @@ function FormularioBebe(props) {
   return (
     <section>
       <h2>Registrar un bebé</h2>
+
+      {/**Si el mensaje de éxito no está vacío lo muestra */}
+      {mensaje !== "" && <p>{mensaje}</p>}
 
       <form onSubmit={gestionarEnvio}>
         <label>
