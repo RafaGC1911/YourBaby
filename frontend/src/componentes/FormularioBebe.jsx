@@ -9,6 +9,24 @@ function FormularioBebe(props) {
   let gestionarEnvio = async (e) => {
     e.preventDefault();
 
+    setMensaje("");//Hacer que desaparezca el mensaje de error de comprobaciones cuando usuario envíe los datos bien
+
+    //Comprobar que los campos obligatorios estén rellenados
+    if (
+      nombre.trim() === "" ||
+      fechaNacimiento === "" ||
+      pesoNacimiento === ""
+    ) {
+      setMensaje("Debes rellenar todos los campos.");
+      return;
+    }
+
+    //Comprobar que el peso sea un número mayor que cero.
+    if (Number(pesoNacimiento) <= 0) {
+      setMensaje("El peso debe ser un número mayor que cero.");
+      return;
+    }
+
     let bebe = {
       nombre: nombre,
       fecha_nacimiento: fechaNacimiento,
@@ -34,15 +52,12 @@ function FormularioBebe(props) {
       props.alRegistrar();
 
       //Mostrar mensaje de éxito
-      setMensaje(`Se ha registrado a ${nombre} correctamente.`); 
+      setMensaje(`Se ha registrado a ${nombre} correctamente.`);
 
       //Limpiar campos del formulario al enviar los datos
       setNombre("");
       setFechaNacimiento("");
       setPesoNacimiento("");
-
-      
-
     } catch (error) {
       console.error("Error al registrar el bebé:", error);
     }
