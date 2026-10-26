@@ -113,3 +113,20 @@ article h3 {
 .lista-bebes article {
   margin-bottom: 0;
 }
+
+/* Mensajes del formulario */
+.mensaje-error {
+  color: #b42318;
+  background-color: #fef3f2;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #fecdca;
+}
+
+.mensaje-exito {
+  color: #067647;
+  background-color: #ecfdf3;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #abefc6;
+}
