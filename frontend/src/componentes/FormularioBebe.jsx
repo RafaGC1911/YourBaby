@@ -109,7 +109,8 @@ function FormularioBebe(props) {
           <input
             type="number"
             value={pesoNacimiento}
-            onChange={(e) => setPesoNacimiento(e.target.value)}
+            onChange={(e) => {setPesoNacimiento(e.target.value);}}
+            
           />
         </label>
 
