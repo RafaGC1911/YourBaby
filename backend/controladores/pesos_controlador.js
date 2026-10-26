@@ -11,7 +11,7 @@ let validarId = (id) => {
   return Number.isInteger(Number(id)) && Number(id) > 0;
 };
 
-//Comprobar que una fecha exista y tenga el formato 
+//Comprobar que una fecha exista y tenga el formato
 let validarFecha = (fecha) => {
   if (typeof fecha !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
     return false;
@@ -19,7 +19,7 @@ let validarFecha = (fecha) => {
 
   let fechaConvertida = new Date(`${fecha}T00:00:00Z`);
 
-  return (!Number.isNaN(fechaConvertida.getTime()));
+  return !Number.isNaN(fechaConvertida.getTime());
 };
 
 //Crear una medición de peso
@@ -41,7 +41,7 @@ let guardarPeso = async (req, res) => {
       });
     }
 
-    //Comprobar que el peso sea un número dentro del rango 
+    //Comprobar que el peso sea un número dentro del rango
     if (
       peso === null ||
       peso === "" ||
@@ -181,19 +181,21 @@ let actualizarPeso = async (req, res) => {
     }
 
     //Validar el peso si se quiere modificar
-    if (peso.peso !== undefined) {//Comprueba si el usuario ha enviado el campo peso antes de seguir
+    if (peso.peso !== undefined) {
+      //Comprueba si el usuario ha enviado el campo peso antes de seguir
       if (
         peso.peso === null ||
         peso.peso === "" ||
+        !Number.isFinite(Number(bebe.peso_nacimiento)) ||
         Number(peso.peso) <= 0 ||
-        Number(peso.peso) >= 30
+        Number(peso.peso) >= 10000
       ) {
         return res.status(400).json({
-          message: "El peso debe ser un número mayor que 0 y menor que 30 kg",
+          message: "El peso debe ser un número mayor que 0 y menor que 10 kg",
         });
       }
 
-      peso.peso = Number(peso.peso);//Convertirlo porque los datos enviados en un JSON pueden llegar como texto si el usuario escribe "4.5" por ejemplo
+      peso.peso = Number(peso.peso); //Convertirlo porque los datos enviados en un JSON pueden llegar como texto si el usuario escribe "4.5" por ejemplo
     }
 
     //Validar la fecha si se quiere modificar

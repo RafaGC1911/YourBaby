@@ -37,9 +37,11 @@ let validarBebe = (bebe) => {
   if (
     !bebe.peso_nacimiento ||
     isNaN(bebe.peso_nacimiento) ||
-    Number(bebe.peso_nacimiento) <= 0
+    !Number.isFinite(Number(bebe.peso_nacimiento)) || //Comprueba que el valor convertido sea un número finito, así evita valores como Infinity o texto que no se puede convertir en número.
+    Number(bebe.peso_nacimiento) <= 0 ||
+    Number(bebe.peso_nacimiento) > 10000
   ) {
-    return "El peso al nacer debe ser un número positivo";
+    return "El peso al nacer debe ser un número positivo y no superar los 10 kg";
   }
 
   return null;
@@ -124,8 +126,7 @@ let guardarBebe = async (req, res) => {
   }
 };
 
-//Actualizar los datos de un bebé 
-
+//Actualizar los datos de un bebé
 
 let actualizarBebe = async (req, res) => {
   //Comprobar que el ID del bebé sea un número entero positivo
@@ -138,11 +139,7 @@ let actualizarBebe = async (req, res) => {
   let bebe = req.body;
 
   //Definir los campos que se pueden modificar
-  let camposPermitidos = [
-    "nombre",
-    "fecha_nacimiento",
-    "peso_nacimiento",
-  ];
+  let camposPermitidos = ["nombre", "fecha_nacimiento", "peso_nacimiento"];
 
   let datosActualizados = {};
 
@@ -155,7 +152,8 @@ let actualizarBebe = async (req, res) => {
   }
 
   //Comprobar que se haya enviado al menos un campo válido
-  if (Object.keys(datosActualizados).length === 0) {//object.keys() coge un objeto y devuelve un array con los nombres de todas sus claves
+  if (Object.keys(datosActualizados).length === 0) {
+    //object.keys() coge un objeto y devuelve un array con los nombres de todas sus claves
     return res.status(400).json({
       message: "Debes enviar al menos un campo válido",
     });
@@ -201,16 +199,25 @@ let actualizarBebe = async (req, res) => {
     }
   }
 
-  //Comprobar el peso solo si se quiere modificar
+  // Comprobar el peso solo si se quiere modificar
   if (datosActualizados.peso_nacimiento !== undefined) {
-    if (datosActualizados.peso_nacimiento === "" || Number(datosActualizados.peso_nacimiento) <= 0) {
+    if (
+      datosActualizados.peso_nacimiento === null ||
+      datosActualizados.peso_nacimiento === "" ||
+      !Number.isFinite(Number(datosActualizados.peso_nacimiento)) ||
+      Number(datosActualizados.peso_nacimiento) <= 0 ||
+      Number(datosActualizados.peso_nacimiento) > 10000
+    ) {
       return res.status(400).json({
-        message: "El peso al nacer debe ser un número positivo",
+        message:
+          "El peso al nacer debe ser un número mayor que 0 y no superar los 10 kg",
       });
     }
 
-    //Convertir el peso a número antes de enviarlo al modelo porque mysql espera un campo decimal
-    datosActualizados.peso_nacimiento = Number(datosActualizados.peso_nacimiento);
+    // Convertir el peso a número antes de enviarlo al modelo
+    datosActualizados.peso_nacimiento = Number(
+      datosActualizados.peso_nacimiento,
+    );
   }
 
   try {
@@ -240,7 +247,6 @@ let actualizarBebe = async (req, res) => {
     });
   }
 };
-
 
 // Eliminar un bebé
 let eliminarBebe = async (req, res) => {
