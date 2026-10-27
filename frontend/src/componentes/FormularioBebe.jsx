@@ -73,19 +73,19 @@ function FormularioBebe(props) {
   };
 
   return (
-    <section>
+    <section className="formulario-bebe">
       <h2>Registrar un bebé</h2>
 
       {/**Si el mensaje de éxito no está vacío lo muestra, pero antes se comprueba por qué texto empieza el mensaje, si
        * lo hace por una de esas frases se va a clase error y si no a la clase éxito para luego mostrar el mensaje con formato adecuado
        */}
       {mensaje !== "" && (
-        <p className={tipoMensaje == "error" ? "mensaje-error" : "mensaje-exito"}>
+        <p className={tipoMensaje === "error" ? "mensaje-error" : "mensaje-exito"}>
           {mensaje}
         </p>
       )}
 
-      <form onSubmit={gestionarEnvio}>
+      <form className="formulario-bebe-campos" onSubmit={gestionarEnvio}>
         <label>
           Nombre:
           <input

@@ -130,3 +130,113 @@ article h3 {
   border-radius: 8px;
   border: 1px solid #abefc6;
 }
+
+/* Contenedor principal de la aplicación.
+   Limita el ancho del contenido y lo centra en la pantalla. */
+.contenedor-principal {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* El contenido principal se organiza en vertical,
+   dejando espacio entre el formulario y la lista. */
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Cada sección tiene su propio espacio y fondo,
+   para distinguir visualmente sus contenidos. */
+.seccion-formulario,
+.seccion-bebes {
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Los títulos de las secciones se alinean a la izquierda,
+   en lugar de heredar una posible alineación centrada. */
+.seccion-formulario h2,
+.seccion-bebes h2 {
+  text-align: left;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+/* En pantallas pequeñas reducimos los espacios
+   para aprovechar mejor el ancho disponible. */
+@media (max-width: 600px) {
+  .contenedor-principal {
+    padding: 12px;
+  }
+
+  .seccion-formulario,
+  .seccion-bebes {
+    padding: 16px;
+  }
+}
+
+
+/* Contenedor del formulario */
+.formulario-bebe {
+    width: 100%;
+}
+
+/* Organizamos los campos en vertical y dejamos espacio entre ellos */
+.formulario-bebe-campos {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Cada etiqueta queda encima de su campo */
+.formulario-bebe-campos label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #374151;
+}
+
+/* Damos a todos los campos el mismo tamaño y aspecto */
+.formulario-bebe-campos input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #263238;
+    font: inherit;
+    font-weight: 400;
+    box-sizing: border-box;
+}
+
+/* Resaltamos el campo cuando el usuario lo selecciona */
+.formulario-bebe-campos input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Estilo del botón de registro */
+.formulario-bebe-campos button {
+    align-self: flex-start;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #2563eb;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+/* Cambiamos el color al pasar el ratón por encima */
+.formulario-bebe-campos button:hover {
+    background-color: #1d4ed8;
+}

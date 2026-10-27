@@ -51,23 +51,35 @@ function App() {
   }, []);
 
   return (
-    <div>
+
+    //CABECERA
+    <div className="contenedor-principal">
       <Cabecera />
-      <FormularioBebe alRegistrar={actualizarBebes} />{" "}
-      {/*Pasar una prop con la función para actualizar la lista al registrar un nuevo bebé*/}
-      <h2>Bebés registrados</h2>
-      {mensaje !== "" && <p>{mensaje}</p>}
-      
-      <div className="lista-bebes">
-        {bebes.map((bebe) => (
-          <TarjetaBebe
-            key={bebe.id} //key es una propiedad especial que React utiliza para identificar cada elemento dentro de una lista.
-            nombre={bebe.nombre}
-            fechaNacimiento={bebe.fecha_nacimiento}
-            pesoNacimiento={bebe.peso_nacimiento}
-          />
-        ))}
-      </div>
+      <main>
+
+        {/**FORMULARIO */}
+        <section className="seccion-formulario">
+          <FormularioBebe alRegistrar={actualizarBebes} />
+        </section>
+
+        {/**TARJETAS BEBÉS */}
+        <section className="seccion-bebes">
+          <h2>Bebés registrados</h2>
+
+          {mensaje !== "" && <p>{mensaje}</p>}
+
+          <div className="lista-bebes">
+            {bebes.map((bebe) => (
+              <TarjetaBebe
+                key={bebe.id}
+                nombre={bebe.nombre}
+                fechaNacimiento={bebe.fecha_nacimiento}
+                pesoNacimiento={bebe.peso_nacimiento}
+              />
+            ))}
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
