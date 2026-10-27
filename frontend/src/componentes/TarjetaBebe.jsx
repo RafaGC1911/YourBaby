@@ -29,7 +29,7 @@ function TarjetaBebe(props) {
       <h3>{props.nombre}</h3>
       <p>Fecha de nacimiento: {fechaFormateada}</p>
       <p>Edad: {edadTexto}</p>
-      <p>Peso al nacer: {props.pesoNacimiento} gramos</p>
+      <p>Peso al nacer: {(props.pesoNacimiento / 1000).toFixed(3)} kg</p>{/**convierte los gramos en kilos */}
     </article>
   );
 }

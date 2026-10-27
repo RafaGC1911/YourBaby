@@ -27,8 +27,19 @@ function FormularioBebe(props) {
       return;
     }
 
-    //Comprobar que el peso sea un número mayor que cero.
-    if (Number(pesoNacimiento) <= 0 || Number(pesoNacimiento) > 10000) {
+    // Comprobar que el peso tenga el formato esperado: por ejemplo, 3.550.
+    if (!/^\d{1,2}\.\d{3}$/.test(pesoNacimiento)) {
+      setMensaje("Introduce el peso en el formato indicado, por ejemplo 3.550.",);
+      setTipoMensaje("error");
+      return;
+    }
+
+    // Quitamos el punto para convertir el peso a gramos.
+    // Por ejemplo, "3.550" se convierte en el número 3550.
+    let pesoEnGramos = Number(pesoNacimiento.replace(".", ""));
+
+    // Comprobar que el peso sea mayor que cero y no supere los 10 kg.
+    if (pesoEnGramos <= 0 || pesoEnGramos > 10000) {
       setMensaje("El peso debe ser mayor que cero y no superar los 10 kg.");
       setTipoMensaje("error");
       return;
@@ -37,7 +48,7 @@ function FormularioBebe(props) {
     let bebe = {
       nombre: nombre,
       fecha_nacimiento: fechaNacimiento,
-      peso_nacimiento: pesoNacimiento,
+      peso_nacimiento: pesoEnGramos,
     };
 
     try {
@@ -80,7 +91,11 @@ function FormularioBebe(props) {
        * lo hace por una de esas frases se va a clase error y si no a la clase éxito para luego mostrar el mensaje con formato adecuado
        */}
       {mensaje !== "" && (
-        <p className={tipoMensaje === "error" ? "mensaje-error" : "mensaje-exito"}>
+        <p
+          className={
+            tipoMensaje === "error" ? "mensaje-error" : "mensaje-exito"
+          }
+        >
           {mensaje}
         </p>
       )}
@@ -105,12 +120,13 @@ function FormularioBebe(props) {
         </label>
 
         <label>
-          Peso al nacer (gramos):
+          Peso al nacer (kg):
           <input
-            type="number"
+            type="text" //Para escribir el punto sin que el navegador lo interprete como un decimal
+            inputMode="decimal" //sugiere un teclado numérico decimal en móviles.
+            placeholder="Ej. 3.550"
             value={pesoNacimiento}
-            onChange={(e) => {setPesoNacimiento(e.target.value);}}
-            
+            onChange={(e) => setPesoNacimiento(e.target.value)}
           />
         </label>
 
