@@ -30,6 +30,9 @@ function TarjetaBebe(props) {
       <p>Fecha de nacimiento: {fechaFormateada}</p>
       <p>Edad: {edadTexto}</p>
       <p>Peso al nacer: {(props.pesoNacimiento / 1000).toFixed(3)} kg</p>{/**convierte los gramos en kilos */}
+
+      {/**Botón para editar bebé */}
+      <button type="buton" onClick={()=> props.alEditar(props.id)}>Editar</button>
     </article>
   );
 }
