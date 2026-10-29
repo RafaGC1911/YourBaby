@@ -41,6 +41,10 @@ function TarjetaBebe(props) {
       <button type="button" onClick={() => props.alEliminar(props.id)}>
         Eliminar
       </button>
+
+      <button type="button" onClick={() => props.alVerAlimentaciones(props.id)}>
+        Ver alimentaciones
+      </button>
     </article>
   );
 }

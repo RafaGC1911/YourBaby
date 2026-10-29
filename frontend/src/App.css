@@ -75,6 +75,7 @@ button {
   color: white;
   font-size: 16px;
   cursor: pointer;
+  margin-right:5px;
 }
 
 button:hover {

@@ -4,6 +4,7 @@ import Cabecera from "./componentes/Cabecera.jsx";
 import TarjetaBebe from "./componentes/TarjetaBebe.jsx";
 import FormularioBebe from "./componentes/FormularioBebe.jsx";
 import FormularioEdicionBebe from "./componentes/FormularioEdicionBebe.jsx";
+import SeccionAlimentaciones from "./componentes/SeccionAlimentaciones.jsx";
 
 function App() {
   /*Estados de variables*/
@@ -18,9 +19,22 @@ function App() {
   //Si no hay ninguno seleccionado, el resultado será undefined.
   let bebeSeleccionado = bebes.find((bebe) => bebe.id === bebeEditando);
 
-  //Función que recibe el ID que le envía la tarjeta y lo guarda en el estado.
+  //Guarda el ID del bebé cuyas alimentaciones queremos consultar.
+  //Si vale null, significa que no hemos abierto ninguna sección.
+  let [bebeAlimentaciones, setBebeAlimentaciones] = useState(null);
+
+  //Funciones que reciben el ID que le envía la tarjeta y lo guarda en el estado para que React sepa qué bebé se ha seleccionado..
   let seleccionarBebe = (id) => {
     setBebeEditando(id);
+  };
+
+  let verAlimentaciones = (id) => {
+    setBebeAlimentaciones(id);
+  };
+
+  //Función que cierra la sección de alimentaciones.
+  let cerrarAlimentaciones = () => {
+    setBebeAlimentaciones(null); //Poner a null para indicar que no hay ninguna sección de alimentaciones abierta
   };
 
   //Función para volver a cargar los bebés después de registrar uno nuevo.
@@ -108,7 +122,7 @@ function App() {
         {/**TARJETAS BEBÉS */}
         <section className="seccion-bebes">
           <h2>Bebés registrados</h2>
-          
+
           {mensaje !== "" && <p>{mensaje}</p>}
 
           <div className="lista-bebes">
@@ -121,11 +135,15 @@ function App() {
                 pesoNacimiento={bebe.peso_nacimiento}
                 //conectar el botón editar con la función seleccionarBebe
                 alEditar={seleccionarBebe}
-                //conectar el botón editar con la función eliminarBebe
+                //conectar el botón eliminar con la función eliminarBebe
                 alEliminar={eliminarBebe}
+                //conectar el botón ver alimentaciones con la función
+                alVerAlimentaciones={verAlimentaciones}
               />
             ))}
-            {bebes.length === 0 &&  mensaje === "" && <p>No hay bebés registrados</p>}
+            {bebes.length === 0 && mensaje === "" && (
+              <p>No hay bebés registrados</p>
+            )}
           </div>
 
           {/*Solo mostrar el formulario si se ha seleccionado un bebé */}
@@ -134,6 +152,18 @@ function App() {
               key={bebeSeleccionado.id}
               bebe={bebeSeleccionado}
               alGuardar={actualizarBebes}
+            />
+          )}
+
+          {/* Mostrar las alimentaciones del bebé seleccionado */}
+          {bebeAlimentaciones !== null && (
+            <SeccionAlimentaciones
+              nombreBebe={
+                bebes.find(
+                  (bebe) => String(bebe.id) === String(bebeAlimentaciones),
+                )?.nombre//el signo ? evita un error. Si encuentra al bebé devuelve su propiedad nombre, si no, devuelve undefined sin provocar error
+              }
+              alCerrar={cerrarAlimentaciones}
             />
           )}
         </section>
