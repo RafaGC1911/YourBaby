@@ -29,10 +29,18 @@ function TarjetaBebe(props) {
       <h3>{props.nombre}</h3>
       <p>Fecha de nacimiento: {fechaFormateada}</p>
       <p>Edad: {edadTexto}</p>
-      <p>Peso al nacer: {(props.pesoNacimiento / 1000).toFixed(3)} kg</p>{/**convierte los gramos en kilos */}
+      <p>Peso al nacer: {(props.pesoNacimiento / 1000).toFixed(3)} kg</p>
+      {/**convierte los gramos en kilos */}
 
       {/**Botón para editar bebé */}
-      <button type="buton" onClick={()=> props.alEditar(props.id)}>Editar</button>
+      <button type="buton" onClick={() => props.alEditar(props.id)}>
+        Editar
+      </button>
+
+      {/**Botón para eliminar bebé */}
+      <button type="button" onClick={() => props.alEliminar(props.id)}>
+        Eliminar
+      </button>
     </article>
   );
 }

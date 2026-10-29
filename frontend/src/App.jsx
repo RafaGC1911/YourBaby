@@ -40,6 +40,37 @@ function App() {
     }
   };
 
+  //Eliminar un bebé
+  let eliminarBebe = async (id) => {
+    setMensaje("");
+    // Pedimos confirmación antes de borrar el bebé.
+    let confirmar = window.confirm("¿Eliminar este bebé?");
+
+    //Si el usuario cancela, sale
+    if (!confirmar) {
+      return;
+    }
+
+    try {
+      let response = await fetch(`http://localhost:3000/api/bebes/${id}`, {
+        method: "DELETE",
+      });
+
+      let responseData = await response.json();
+
+      //Si el servidor devuelve un error, lo muestra
+      if (!response.ok) {
+        throw new Error(responseData.message || "No se pudo eliminar el bebé.");
+      }
+
+      //Volver a pedir la lista actualizada al servidor.
+      await actualizarBebes();
+    } catch (error) {
+      console.error("Error al eliminar el bebé:", error);
+      setMensaje(`Error al eliminar el bebé`);
+    }
+  };
+
   useEffect(() => {
     async function obtenerBebes() {
       try {
@@ -56,7 +87,7 @@ function App() {
         setBebes(responseData.data);
         setMensaje("");
       } catch (error) {
-        setMensaje("Error al cargar los bebés: " + error.message);
+        setMensaje("Error al cargar los bebés");
       }
     }
 
@@ -77,7 +108,7 @@ function App() {
         {/**TARJETAS BEBÉS */}
         <section className="seccion-bebes">
           <h2>Bebés registrados</h2>
-
+          
           {mensaje !== "" && <p>{mensaje}</p>}
 
           <div className="lista-bebes">
@@ -90,8 +121,11 @@ function App() {
                 pesoNacimiento={bebe.peso_nacimiento}
                 //conectar el botón editar con la función seleccionarBebe
                 alEditar={seleccionarBebe}
+                //conectar el botón editar con la función eliminarBebe
+                alEliminar={eliminarBebe}
               />
             ))}
+            {bebes.length === 0 &&  mensaje === "" && <p>No hay bebés registrados</p>}
           </div>
 
           {/*Solo mostrar el formulario si se ha seleccionado un bebé */}
@@ -99,7 +133,7 @@ function App() {
             <FormularioEdicionBebe
               key={bebeSeleccionado.id}
               bebe={bebeSeleccionado}
-              alGuardar = {actualizarBebes}
+              alGuardar={actualizarBebes}
             />
           )}
         </section>
