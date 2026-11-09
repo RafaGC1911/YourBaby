@@ -61,63 +61,82 @@ function FormularioAlimentacion(props) {
     }
   };
 
+  //Obtengo la fecha actual en formato YYYY-MM-DD.
+  let hoy = new Date();
+  let fechaMaxima = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
+
   return (
     <form className="formulario-alimentacion" onSubmit={registrarAlimentacion}>
       <h3>Registrar alimentación</h3>
 
-      <label htmlFor="cantidad_ml">Cantidad (ml)</label>
-      <input
-        type="number"
-        id="cantidad_ml"
-        name="cantidad_ml"
-        min="1"
-        value={cantidad}
-        onChange={(e) => setCantidad(e.target.value)}
-      />
+      <div className="campo-alimentacion">
+        <label htmlFor="cantidad_ml">Cantidad (ml)</label>
+        <input
+          type="number"
+          id="cantidad_ml"
+          name="cantidad_ml"
+          min="1"
+          value={cantidad}
+          onChange={(e) => setCantidad(e.target.value)}
+        />
+      </div>
 
-      <label htmlFor="tipo">Tipo de alimentación</label>
-      <select
-        id="tipo"
-        name="tipo"
-        required
-        value={tipo}
-        onChange={(e) => setTipo(e.target.value)}
-      >
-        <option value="">Selecciona una opción</option>
-        <option value="pecho">Pecho</option>
-        <option value="biberon">Biberón</option>
-      </select>
+      <div className="campo-alimentacion">
+        <label htmlFor="tipo">Tipo de alimentación</label>
+        <select
+          id="tipo"
+          name="tipo"
+          required
+          value={tipo}
+          onChange={(e) => setTipo(e.target.value)}
+        >
+          <option value="">Selecciona una opción</option>
+          <option value="pecho">Pecho</option>
+          <option value="biberon">Biberón</option>
+        </select>
+      </div>
 
-      <label htmlFor="fecha">Fecha (DD/MM/AAAA)</label>
-      <input
-        type="date"
-        id="fecha"
-        name="fecha"
-        placeholder="04/11/2026"
-        value={fecha}
-        onChange={(e) => setFecha(e.target.value)}
-        required
-      />
+      <div className="campos-fecha-hora">
+        <div className="campo-alimentacion">
+          <label htmlFor="fecha">Fecha</label>
+          <input
+            type="date"
+            id="fecha"
+            name="fecha"
+            value={fecha}
+            max={fechaMaxima}
+            onChange={(e) => setFecha(e.target.value)}
+            required
+          />
+        </div>
 
-      <label htmlFor="hora">Hora</label>
-      <input
-        type="time"
-        id="hora"
-        name="hora"
-        value={hora}
-        onChange={(e) => setHora(e.target.value)}
-        required
-      />
+        <div className="campo-alimentacion">
+          <label htmlFor="hora">Hora</label>
+          <input
+            type="time"
+            id="hora"
+            name="hora"
+            value={hora}
+            onChange={(e) => setHora(e.target.value)}
+            required
+          />
+        </div>
+      </div>
 
-      <label htmlFor="observaciones">Observaciones</label>
-      <textarea
-        id="observaciones"
-        name="observaciones"
-        value={observaciones}
-        onChange={(e) => setObservaciones(e.target.value)}
-      />
+      <div className="campo-alimentacion">
+        <label htmlFor="observaciones">Observaciones</label>
+        <textarea
+          id="observaciones"
+          name="observaciones"
+          value={observaciones}
+          onChange={(e) => setObservaciones(e.target.value)}
+          rows="3"
+        />
+      </div>
 
-      <button type="submit">Guardar alimentación</button>
+      <button type="submit" className="boton-guardar-alimentacion">
+        Guardar alimentación
+      </button>
     </form>
   );
 }

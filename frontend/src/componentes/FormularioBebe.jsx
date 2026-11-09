@@ -29,7 +29,9 @@ function FormularioBebe(props) {
 
     // Comprobar que el peso tenga el formato esperado: por ejemplo, 3.550.
     if (!/^\d{1,2}\.\d{3}$/.test(pesoNacimiento)) {
-      setMensaje("Introduce el peso en el formato indicado, por ejemplo 3.550.",);
+      setMensaje(
+        "Introduce el peso en el formato indicado, por ejemplo 3.550.",
+      );
       setTipoMensaje("error");
       return;
     }
@@ -82,6 +84,9 @@ function FormularioBebe(props) {
       setTipoMensaje("error");
     }
   };
+  //Obtengo la fecha actual en formato YYYY-MM-DD.
+  let hoy = new Date();
+  let fechaMaxima = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
 
   return (
     <section className="formulario-bebe">
@@ -115,6 +120,7 @@ function FormularioBebe(props) {
           <input
             type="date"
             value={fechaNacimiento}
+            max={fechaMaxima}
             onChange={(e) => setFechaNacimiento(e.target.value)}
           />
         </label>

@@ -47,7 +47,7 @@ function FormularioEdicionAlimentacion(props) {
           responseData.message || "No se pudo actualizar la alimentación.",
         );
       }
-      
+
       //Actualizo la lista y compruebo si se ha cargado correctamente.
       let resultado = await props.alGuardar();
 
@@ -65,54 +65,85 @@ function FormularioEdicionAlimentacion(props) {
     }
   };
 
+  //Obtengo la fecha actual en formato YYYY-MM-DD.
+  let hoy = new Date();
+  let fechaMaxima = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
+
   return (
     <form className="formulario-edicion-alimentacion" onSubmit={guardarCambios}>
       <h3>Editar alimentación</h3>
 
-      <label htmlFor="cantidad">Cantidad (ml)</label>
-      <input
-        type="number"
-        id="cantidad"
-        value={cantidad}
-        onChange={(e) => setCantidad(e.target.value)}
-      />
+      <div className="campo-alimentacion">
+        <label htmlFor="cantidad">Cantidad (ml)</label>
+        <input
+          type="number"
+          id="cantidad"
+          min="1"
+          value={cantidad}
+          onChange={(e) => setCantidad(e.target.value)}
+        />
+      </div>
 
-      <label htmlFor="tipo">Tipo de alimentación</label>
-      <select id="tipo" value={tipo} onChange={(e) => setTipo(e.target.value)}>
-        <option value="pecho">Pecho</option>
-        <option value="biberon">Biberón</option>
-      </select>
+      <div className="campo-alimentacion">
+        <label htmlFor="tipo">Tipo de alimentación</label>
+        <select
+          id="tipo"
+          value={tipo}
+          onChange={(e) => setTipo(e.target.value)}
+        >
+          <option value="pecho">Pecho</option>
+          <option value="biberon">Biberón</option>
+        </select>
+      </div>
 
-      <label htmlFor="fecha">Fecha</label>
-      <input
-        type="date"
-        id="fecha"
-        value={fecha}
-        onChange={(e) => setFecha(e.target.value)}
-        required
-      />
+      <div className="campos-fecha-hora">
+        <div className="campo-alimentacion">
+          <label htmlFor="fecha">Fecha</label>
+          <input
+            type="date"
+            id="fecha"
+            value={fecha}
+            max={fechaMaxima}
+            onChange={(e) => setFecha(e.target.value)}
+            required
+          />
+        </div>
 
-      <label htmlFor="hora">Hora</label>
-      <input
-        type="time"
-        id="hora"
-        value={hora}
-        onChange={(e) => setHora(e.target.value)}
-        required
-      />
+        <div className="campo-alimentacion">
+          <label htmlFor="hora">Hora</label>
+          <input
+            type="time"
+            id="hora"
+            value={hora}
+            onChange={(e) => setHora(e.target.value)}
+            required
+          />
+        </div>
+      </div>
 
-      <label htmlFor="observaciones">Observaciones</label>
-      <textarea
-        id="observaciones"
-        value={observaciones}
-        onChange={(e) => setObservaciones(e.target.value)}
-      />
+      <div className="campo-alimentacion">
+        <label htmlFor="observaciones">Observaciones</label>
+        <textarea
+          id="observaciones"
+          value={observaciones}
+          onChange={(e) => setObservaciones(e.target.value)}
+          rows="3"
+        />
+      </div>
 
-      <button type="submit">Guardar cambios</button>
+      <div className="acciones-formulario-edicion">
+        <button type="submit" className="boton-guardar-alimentacion">
+          Guardar cambios
+        </button>
 
-      <button type="button" onClick={props.alCerrar}>
-        Cancelar
-      </button>
+        <button
+          type="button"
+          className="boton-cancelar-edicion"
+          onClick={props.alCerrar}
+        >
+          Cancelar
+        </button>
+      </div>
     </form>
   );
 }

@@ -1,4 +1,22 @@
-/* Estilos generales de la aplicación */
+/* 
+   *********ESTILOS GENERALES***********
+    */
+
+/*Defino los colores principales de YourBaby*/
+:root {
+  --color-fondo: #f5f0e8;
+  --color-superficie: #fffcf7;
+  --color-beige: #e8dfd0;
+  --color-arena: #d4c2a8;
+  --color-marron: #8b735d;
+  --color-marron-oscuro: #6f5945;
+  --color-texto: #493d32;
+  --color-texto-secundario: #8a7b6b;
+  --color-error: #b42318;
+  --color-exito: #39734d;
+}
+
+/*Aplico el mismo cálculo de tamaño a todos los elementos*/
 * {
   box-sizing: border-box;
 }
@@ -6,46 +24,76 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #f4f7fb;
-  color: #263238;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
 }
 
-/* Contenido principal */
 #root {
-  max-width: 1000px;
+  width: 100%;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 24px;
 }
 
-/* Cabecera de YourBaby */
+h1,
+h2,
+h3,
+h4 {
+  color: var(--color-marron-oscuro);
+}
+
+p {
+  line-height: 1.5;
+}
+
+/* 
+   ******CABECERA************
+    */
+
 header {
-  background-color: #dceef9;
-  padding: 28px;
+  margin-bottom: 30px;
+  padding: 24px;
+  background-color: var(--color-superficie);
   border-radius: 16px;
-  margin-bottom: 28px;
+  box-shadow: 0 3px 12px rgba(73, 61, 50, 0.06);
 }
 
 header h1 {
-  margin: 0 0 8px;
-  color: #245b78;
-}
-
-header p {
   margin: 0;
-  color: #426779;
+  color: var(--color-marron-oscuro);
 }
 
-/* Formulario y lista de bebés */
+/* 
+   ********ESTRUCTURA PRINCIPAL***********
+    */
+
+.contenedor-principal {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+main {
+  width: 100%;
+}
+
 section,
 article {
-  background-color: white;
-  padding: 22px;
-  margin-bottom: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background-color: var(--color-superficie);
+  border-radius: 14px;
+  box-shadow: 0 3px 12px rgba(73, 61, 50, 0.05);
 }
 
-/* Campos del formulario */
+.seccion-formulario,
+.seccion-bebes {
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+/* 
+  ********** FORMULARIOS************
+    */
+
 form {
   display: flex;
   flex-direction: column;
@@ -55,195 +103,444 @@ form {
 label {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-weight: bold;
+  gap: 8px;
+  color: var(--color-texto);
+  font-weight: 600;
 }
 
-input {
-  padding: 11px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 16px;
-}
-
-/* Botón de registro */
-button {
+input,
+select,
+textarea {
+  width: 100%;
   padding: 12px;
+  border: 1px solid var(--color-arena);
+  border-radius: 8px;
+  background-color: var(--color-superficie);
+  color: var(--color-texto);
+  font: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-marron);
+  box-shadow: 0 0 0 3px rgba(139, 115, 93, 0.15);
+}
+
+textarea {
+  resize: vertical;
+}
+
+/*Campos del formulario de bebé*/
+.formulario-bebe {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.formulario-bebe-campos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* 
+   BOTONES
+    */
+
+button {
+  padding: 12px 18px;
   border: none;
   border-radius: 8px;
-  background-color: #367da0;
+  background-color: var(--color-marron);
   color: white;
-  font-size: 16px;
+  font: inherit;
+  font-weight: 600;
   cursor: pointer;
-  margin-right: 5px;
+  transition: background-color 0.2s ease;
 }
 
 button:hover {
-  background-color: #245b78;
+  background-color: var(--color-marron-oscuro);
 }
 
-/* Tarjetas de bebés */
-article h3 {
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 
+   *********LISTA Y TARJETAS DE BEBÉS************
+    */
+
+.lista-bebes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px;
+}
+
+.lista-bebes article {
+  padding: 20px;
+  margin: 0;
+  border: 1px solid var(--color-beige);
+}
+
+.lista-bebes h3 {
   margin-top: 0;
-  color: #245b78;
 }
 
-/* Adaptación a pantallas pequeñas */
+.lista-bebes p {
+  color: var(--color-texto-secundario);
+}
+
+/* 
+   ******MENSAJES***********
+    */
+
+.mensaje {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.mensaje-error {
+  background-color: #fce8e6;
+  color: var(--color-error);
+  border: 1px solid #f2b8b5;
+}
+
+.mensaje-exito {
+  background-color: #e8f3e9;
+  color: var(--color-exito);
+  border: 1px solid #b8d9bd;
+}
+
+/* 
+   ********SECCIÓN DE ALIMENTACIONES***********
+    */
+
+.seccion-alimentaciones {
+  padding: 28px;
+  margin-bottom: 24px;
+  background-color: var(--color-superficie);
+  border-radius: 16px;
+  box-shadow: 0 3px 12px rgba(73, 61, 50, 0.06);
+}
+
+/*Organizo la cabecera y separo el botón de cerrar del título*/
+.cabecera-alimentaciones {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.cabecera-alimentaciones h2 {
+  margin: 0 0 6px;
+  color: var(--color-marron-oscuro);
+  font-size: 24px;
+}
+
+.cabecera-alimentaciones p {
+  margin: 0;
+  color: var(--color-texto-secundario);
+}
+
+/*Contenedor del formulario de registro y edición*/
+.contenedor-formulario-alimentacion {
+  padding: 24px;
+  margin-bottom: 30px;
+  background-color: var(--color-fondo);
+  border: 1px solid var(--color-beige);
+  border-radius: 12px;
+}
+
+.contenedor-formulario-alimentacion form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.contenedor-formulario-alimentacion label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--color-texto);
+  font-weight: 600;
+}
+
+.contenedor-formulario-alimentacion input,
+.contenedor-formulario-alimentacion select,
+.contenedor-formulario-alimentacion textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--color-arena);
+  border-radius: 8px;
+  background-color: var(--color-superficie);
+  color: var(--color-texto);
+  font: inherit;
+  font-weight: 400;
+}
+
+.contenedor-formulario-alimentacion input:focus,
+.contenedor-formulario-alimentacion select:focus,
+.contenedor-formulario-alimentacion textarea:focus {
+  outline: none;
+  border-color: var(--color-marron);
+  box-shadow: 0 0 0 3px rgba(139, 115, 93, 0.15);
+}
+
+/* 
+   *******HISTORIAL DE ALIMENTACIONES*********
+    */
+
+.historial-alimentaciones h3 {
+  margin-bottom: 18px;
+  color: var(--color-marron-oscuro);
+}
+
+.lista-alimentaciones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px;
+}
+
+.tarjeta-alimentacion {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0;
+  padding: 20px;
+  border: 1px solid var(--color-beige);
+  border-radius: 12px;
+  background-color: var(--color-superficie);
+  box-shadow: 0 2px 6px rgba(73, 61, 50, 0.04);
+}
+
+.tarjeta-alimentacion h4 {
+  margin: 0 0 12px;
+  color: var(--color-marron-oscuro);
+  font-size: 17px;
+}
+
+.tarjeta-alimentacion p {
+  margin: 8px 0;
+  color: var(--color-texto-secundario);
+  font-size: 14px;
+}
+
+.tarjeta-alimentacion .cantidad-alimentacion {
+  color: var(--color-marron);
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/*Botones para editar y eliminar registros*/
+.acciones-alimentacion {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.acciones-alimentacion button {
+  flex: 1;
+  margin: 0;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.boton-editar {
+  background-color: var(--color-marron);
+}
+
+.boton-editar:hover {
+  background-color: var(--color-marron-oscuro);
+}
+
+.boton-eliminar {
+  background-color: var(--color-error);
+}
+
+.boton-eliminar:hover {
+  background-color: #912018;
+}
+
+.boton-cerrar {
+  background-color: #a8957d;
+  white-space: nowrap;
+}
+
+.boton-cerrar:hover {
+  background-color: var(--color-marron);
+}
+
+/*Mensaje que aparece cuando todavía no hay registros*/
+.sin-alimentaciones {
+  padding: 24px;
+  text-align: center;
+  color: var(--color-texto-secundario);
+  background-color: var(--color-fondo);
+  border: 1px dashed var(--color-arena);
+  border-radius: 10px;
+}
+
+/* 
+   *********DISEÑO ADAPTABLE A MÓVILES********
+    */
+
 @media (max-width: 600px) {
   #root {
     padding: 12px;
   }
 
-  header,
-  section,
-  article {
-    padding: 16px;
-  }
-}
-
-/*Organizar las tarjetas de los bebés */
-.lista-bebes {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  /*repeat(auto-fit, ...): coloca tantas columnas como quepan en el espacio disponible.
-    minmax(250px, 1fr): cada columna tendrá al menos 250 píxeles y podrá crecer para ocupar el espacio disponible.*/
-  gap: 20px;
-}
-
-/* Evitar que las tarjetas tengan un margen inferior extra */
-.lista-bebes article {
-  margin-bottom: 0;
-}
-/* Estilo común para todos los mensajes */
-.mensaje {
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 5px;
-  font-size: 14px;
-}
-
-/* Mensajes del formulario */
-.mensaje-error {
-  color: #b42318;
-  background-color: #fef3f2;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #fecdca;
-}
-
-.mensaje-exito {
-  color: #067647;
-  background-color: #ecfdf3;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #abefc6;
-}
-
-/* Contenedor principal de la aplicación.
-   Limita el ancho del contenido y lo centra en la pantalla. */
-.contenedor-principal {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-/* El contenido principal se organiza en vertical,
-   dejando espacio entre el formulario y la lista. */
-main {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-/* Cada sección tiene su propio espacio y fondo,
-   para distinguir visualmente sus contenidos. */
-.seccion-formulario,
-.seccion-bebes {
-  padding: 24px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-/* Los títulos de las secciones se alinean a la izquierda,
-   en lugar de heredar una posible alineación centrada. */
-.seccion-formulario h2,
-.seccion-bebes h2 {
-  text-align: left;
-  margin-top: 0;
-  margin-bottom: 20px;
-}
-
-/* En pantallas pequeñas reducimos los espacios
-   para aprovechar mejor el ancho disponible. */
-@media (max-width: 600px) {
-  .contenedor-principal {
-    padding: 12px;
+  header {
+    padding: 18px;
   }
 
   .seccion-formulario,
   .seccion-bebes {
     padding: 16px;
   }
+
+  .formulario-bebe-campos {
+    grid-template-columns: 1fr;
+  }
+
+  .seccion-alimentaciones {
+    padding: 16px;
+  }
+
+  .cabecera-alimentaciones {
+    align-items: flex-start;
+  }
+
+  .cabecera-alimentaciones h2 {
+    font-size: 21px;
+  }
+
+  .contenedor-formulario-alimentacion {
+    padding: 16px;
+  }
+
+  .lista-alimentaciones {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* Contenedor del formulario */
-.formulario-bebe {
-  width: 100%;
+/* 
+   ******FORMULARIO DE REGISTRO DE ALIMENTACIÓN***********
+    */
+
+.formulario-alimentacion h3 {
+  margin: 0 0 6px;
+  color: var(--color-marron-oscuro);
+  font-size: 20px;
 }
 
-/* Organizamos los campos en vertical y dejamos espacio entre ellos */
-.formulario-bebe-campos {
+/*Cada campo mantiene su etiqueta encima del control*/
+.campo-alimentacion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/*Organizo fecha y hora en dos columnas*/
+.campos-fecha-hora {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/*Destaco el botón de guardar*/
+.boton-guardar-alimentacion {
+  align-self: flex-start;
+  min-width: 210px;
+  margin-top: 8px;
+  background-color: var(--color-marron);
+}
+
+.boton-guardar-alimentacion:hover {
+  background-color: var(--color-marron-oscuro);
+}
+
+/*En móviles apilo fecha y hora*/
+@media (max-width: 600px) {
+  .campos-fecha-hora {
+    grid-template-columns: 1fr;
+  }
+
+  .boton-guardar-alimentacion {
+    width: 100%;
+  }
+}
+
+/* 
+   ***FORMULARIO DE EDICIÓN DE ALIMENTACIÓN******
+    */
+
+.formulario-edicion-alimentacion {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-/* Cada etiqueta queda encima de su campo */
-.formulario-bebe-campos label {
+.formulario-edicion-alimentacion h3 {
+  margin: 0 0 6px;
+  color: var(--color-marron-oscuro);
+  font-size: 20px;
+}
+
+/*Organizo los botones al final del formulario*/
+.acciones-formulario-edicion {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  color: #374151;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
 }
 
-/* Damos a todos los campos el mismo tamaño y aspecto */
-.formulario-bebe-campos input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background-color: #ffffff;
-  color: #263238;
-  font: inherit;
-  font-weight: 400;
-  box-sizing: border-box;
+.acciones-formulario-edicion button {
+  min-width: 160px;
 }
 
-/* Resaltamos el campo cuando el usuario lo selecciona */
-.formulario-bebe-campos input:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+/*Diferencio visualmente el botón de cancelar*/
+.boton-cancelar-edicion {
+  background-color: var(--color-beige);
+  color: var(--color-texto);
 }
 
-/* Estilo del botón de registro */
-.formulario-bebe-campos button {
-  align-self: flex-start;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  background-color: #2563eb;
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+.boton-cancelar-edicion:hover {
+  background-color: var(--color-arena);
 }
 
-/* Cambiamos el color al pasar el ratón por encima */
-.formulario-bebe-campos button:hover {
-  background-color: #1d4ed8;
+/*En móviles los botones ocupan todo el ancho*/
+@media (max-width: 600px) {
+  .acciones-formulario-edicion {
+    flex-direction: column;
+  }
+
+  .acciones-formulario-edicion button {
+    width: 100%;
+  }
+}
+
+/* ==========================================
+   BOTONES DE ACCIÓN DE LAS TARJETAS DE BEBÉS
+   ========================================== */
+
+/*Separo los botones y permito que salten de línea si hace falta*/
+.acciones-bebe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/*Evito que los botones queden demasiado juntos*/
+.acciones-bebe button {
+  flex: 1;
+  min-width: 100px;
+  margin: 0;
 }

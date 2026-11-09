@@ -90,8 +90,11 @@ function FormularioEdicionBebe(props) {
       setTipoMensaje("error");
     }
   };
+  //Obtengo la fecha actual en formato YYYY-MM-DD.
+  let hoy = new Date();
+  let fechaMaxima = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
+  
 
-  //*******RENDERIZADO */
   return (
     <section className="formulario-bebe">
       <h3>Editar bebé: {props.bebe.nombre}</h3>
@@ -122,6 +125,7 @@ function FormularioEdicionBebe(props) {
           <input
             type="date"
             value={fechaNacimiento}
+            max={fechaMaxima}
             onChange={(e) => setFechaNacimiento(e.target.value)}
           />
         </label>

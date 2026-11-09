@@ -32,19 +32,24 @@ function TarjetaBebe(props) {
       <p>Peso al nacer: {(props.pesoNacimiento / 1000).toFixed(3)} kg</p>
       {/**convierte los gramos en kilos */}
 
-      {/**Botón para editar bebé */}
-      <button type="buton" onClick={() => props.alEditar(props.id)}>
-        Editar
-      </button>
+      <div className="acciones-bebe">
+        {/**Botón para editar bebé */}
+        <button type="buton" onClick={() => props.alEditar(props.id)}>
+          Editar
+        </button>
 
-      {/**Botón para eliminar bebé */}
-      <button type="button" onClick={() => props.alEliminar(props.id)}>
-        Eliminar
-      </button>
+        {/**Botón para eliminar bebé */}
+        <button type="button" onClick={() => props.alEliminar(props.id)}>
+          Eliminar
+        </button>
 
-      <button type="button" onClick={() => props.alVerAlimentaciones(props.id)}>
-        Ver alimentaciones
-      </button>
+        <button
+          type="button"
+          onClick={() => props.alVerAlimentaciones(props.id)}
+        >
+          Ver alimentaciones
+        </button>
+      </div>
     </article>
   );
 }
