@@ -75,7 +75,7 @@ button {
   color: white;
   font-size: 16px;
   cursor: pointer;
-  margin-right:5px;
+  margin-right: 5px;
 }
 
 button:hover {
@@ -113,6 +113,13 @@ article h3 {
 /* Evitar que las tarjetas tengan un margen inferior extra */
 .lista-bebes article {
   margin-bottom: 0;
+}
+/* Estilo común para todos los mensajes */
+.mensaje {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
 /* Mensajes del formulario */
@@ -180,64 +187,63 @@ main {
   }
 }
 
-
 /* Contenedor del formulario */
 .formulario-bebe {
-    width: 100%;
+  width: 100%;
 }
 
 /* Organizamos los campos en vertical y dejamos espacio entre ellos */
 .formulario-bebe-campos {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 /* Cada etiqueta queda encima de su campo */
 .formulario-bebe-campos label {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    color: #374151;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
 }
 
 /* Damos a todos los campos el mismo tamaño y aspecto */
 .formulario-bebe-campos input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    background-color: #ffffff;
-    color: #263238;
-    font: inherit;
-    font-weight: 400;
-    box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #263238;
+  font: inherit;
+  font-weight: 400;
+  box-sizing: border-box;
 }
 
 /* Resaltamos el campo cuando el usuario lo selecciona */
 .formulario-bebe-campos input:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 /* Estilo del botón de registro */
 .formulario-bebe-campos button {
-    align-self: flex-start;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    background-color: #2563eb;
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+  align-self: flex-start;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 /* Cambiamos el color al pasar el ratón por encima */
 .formulario-bebe-campos button:hover {
-    background-color: #1d4ed8;
+  background-color: #1d4ed8;
 }

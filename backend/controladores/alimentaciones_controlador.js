@@ -24,7 +24,7 @@ let guardarAlimentacion = async (req, res) => {
       });
     }
 
-    // La cantidad es opcional, pero debe ser positiva si se indica
+    //La cantidad es opcional, pero debe ser positiva si se indica
     if (
       alimentacion.cantidad_ml !== undefined &&
       alimentacion.cantidad_ml !== null &&

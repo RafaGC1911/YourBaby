@@ -163,7 +163,9 @@ function App() {
                   (bebe) => String(bebe.id) === String(bebeAlimentaciones),
                 )?.nombre//el signo ? evita un error. Si encuentra al bebé devuelve su propiedad nombre, si no, devuelve undefined sin provocar error
               }
+              bebeId={bebeAlimentaciones}//Pasar el id
               alCerrar={cerrarAlimentaciones}
+              
             />
           )}
         </section>
