@@ -16,22 +16,11 @@ let validarBebe = (bebe) => {
     return "El nombre es obligatorio";
   }
 
-  //Validar que tenga el formato de fecha correcto para que mysql trabaje luego
-  if (
-    !bebe.fecha_nacimiento ||
-    !/^\d{4}-\d{2}-\d{2}$/.test(bebe.fecha_nacimiento)
-  ) {
-    return "La fecha debe tener el formato YYYY-MM-DD";
-  }
+  //Validar que la fecha sea correcta y no sea futura.
+  let errorFecha = validarFechaNoFutura(bebe.fecha_nacimiento);
 
-  //Validar que sea una fecha válida, que el usuario no ponga 30 de febrero por ejemplo
-  let fecha = new Date(bebe.fecha_nacimiento + "T00:00:00Z");
-
-  if (
-    isNaN(fecha.getTime()) ||
-    fecha.toISOString().slice(0, 10) !== bebe.fecha_nacimiento
-  ) {
-    return "La fecha de nacimiento no es válida";
+  if (errorFecha) {
+    return errorFecha;
   }
 
   if (
@@ -42,6 +31,33 @@ let validarBebe = (bebe) => {
     Number(bebe.peso_nacimiento) > 10000
   ) {
     return "El peso al nacer debe ser un número positivo y no superar los 10 kg";
+  }
+
+  return null;
+};
+
+/**Compruebo que una fecha tenga formato correcto, exista y no sea futura.*/
+let validarFechaNoFutura = (fecha) => {
+  if (typeof fecha !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+    return "La fecha debe tener el formato YYYY-MM-DD";
+  }
+
+  //Compruebo que la fecha exista realmente.
+  let fechaComprobada = new Date(fecha + "T00:00:00Z");
+
+  if (
+    isNaN(fechaComprobada.getTime()) ||
+    fechaComprobada.toISOString().slice(0, 10) !== fecha
+  ) {
+    return "La fecha introducida no es válida";
+  }
+
+  //Obtengo la fecha de hoy utilizando la hora local del servidor.
+  let hoy = new Date();
+  let fechaHoy = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
+
+  if (fecha > fechaHoy) {
+    return "La fecha no puede ser posterior a hoy";
   }
 
   return null;
@@ -175,29 +191,18 @@ let actualizarBebe = async (req, res) => {
     datosActualizados.nombre = datosActualizados.nombre.trim();
   }
 
-  //Comprobar el formato de la fecha solo si se ha enviado
+  
+  //Comprobar la fecha solo si se quiere modificar.
   if (datosActualizados.fecha_nacimiento !== undefined) {
-    let fechaNacimiento = datosActualizados.fecha_nacimiento;
+    let errorFecha = validarFechaNoFutura(datosActualizados.fecha_nacimiento);
 
-    //La fecha debe tener el formato año-mes-día porque luego es con lo que trabaja mysql
-    if (
-      typeof fechaNacimiento !== "string" ||
-      !/^\d{4}-\d{2}-\d{2}$/.test(fechaNacimiento)
-    ) {
+    if (errorFecha) {
       return res.status(400).json({
-        message: "La fecha debe tener el formato YYYY-MM-DD",
-      });
-    }
-
-    //Comprobar que la fecha exista realmente y que no metan 30 de febrero por ejemplo
-    let fecha = new Date(fechaNacimiento + "T00:00:00Z");
-
-    if (isNaN(fecha.getTime())) {
-      return res.status(400).json({
-        message: "La fecha de nacimiento no es válida",
+        message: errorFecha,
       });
     }
   }
+
 
   // Comprobar el peso solo si se quiere modificar
   if (datosActualizados.peso_nacimiento !== undefined) {
