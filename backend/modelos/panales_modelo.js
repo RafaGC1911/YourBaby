@@ -19,19 +19,21 @@ let crearPanal = (panal) => {
 
 let obtenerPanales = () => {
   let sql = `
-        SELECT *
-        FROM panales
-    `;
+  SELECT *
+  FROM panales
+  ORDER BY fecha_hora DESC
+`;
 
   return conexion.promise().query(sql);
 };
 
 let obtenerPanalesPorBebe = (bebeId) => {
   let sql = `
-        SELECT *
-        FROM panales
-        WHERE bebe_id = ?
-    `;
+  SELECT *
+  FROM panales
+  WHERE bebe_id = ?
+  ORDER BY fecha_hora DESC
+`;
 
   return conexion.promise().query(sql, [bebeId]);
 };

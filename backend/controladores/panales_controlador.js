@@ -22,6 +22,17 @@ let validarFecha = (fecha) => {
   return !isNaN(fechaConvertida.getTime());
 };
 
+/**Compruebo que la fecha y hora sean válidas y que no sean posteriores al momento actual.*/
+let validarFechaNoFutura = (fecha) => {
+  //Primero compruebo que la fecha tenga un valor válido.
+  if (!validarFecha(fecha)) {
+    return false;
+  }
+
+  //Comparo la fecha indicada con la fecha y hora actuales.
+  return new Date(fecha) <= new Date();
+};
+
 //Tipos de pañal que permitimos registrar
 let tiposPermitidos = ["pipí", "caca", "mixto"];
 
@@ -45,7 +56,7 @@ let guardarPanal = async (req, res) => {
     }
 
     //Comprobar que la fecha sea válida
-    if (!validarFecha(fecha_hora)) {
+    if (!validarFechaNoFutura(fecha_hora)) {
       return res.status(400).json({
         message: "La fecha y hora no son válidas",
       });
@@ -85,7 +96,10 @@ let obtenerPanales = async (req, res) => {
   try {
     let [panales] = await obtenerPanalesModelo();
 
-    return res.status(200).json(panales);
+    return res.status(200).json({
+      message: "Registros de pañales obtenidos correctamente",
+      data: panales,
+    });
   } catch (error) {
     console.error("Error al obtener los registros de pañales:", error);
 
@@ -109,7 +123,10 @@ let obtenerPanalesPorBebe = async (req, res) => {
 
     let [panales] = await obtenerPanalesPorBebeModelo(bebeId);
 
-    return res.status(200).json(panales);
+    return res.status(200).json({
+      message: "Registros de pañales obtenidos correctamente",
+      data: panales,
+    });
   } catch (error) {
     console.error("Error al obtener los pañales del bebé:", error);
 
@@ -163,7 +180,7 @@ let actualizarPanal = async (req, res) => {
     }
 
     //Validar la fecha solo si se quiere cambiar
-    if (panal.fecha_hora !== undefined && !validarFecha(panal.fecha_hora)) {
+    if (panal.fecha_hora !== undefined && !validarFechaNoFutura(panal.fecha_hora)) {
       return res.status(400).json({
         message: "La fecha y hora no son válidas",
       });
