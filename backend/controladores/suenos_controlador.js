@@ -13,21 +13,32 @@ let validarId = (id) => {
 
 // Comprobar que una fecha y hora tengan un formato válido
 let validarFecha = (fecha) => {
-  if (typeof fecha !== "string" || fecha.trim() === "") {//Comprobar que sea una cadena y que el usuario no introduzca "   " que las puede dar por buenas
+  if (typeof fecha !== "string" || fecha.trim() === "") {
+    //Comprobar que sea una cadena y que el usuario no introduzca "   " que las puede dar por buenas
     return false;
   }
 
   let valorFecha = new Date(fecha);
 
-  return !isNaN(valorFecha.getTime());//Si la fecha es inválida (un número o un "hola" por ejemplo), getTime() va a devolver NaN
+  return !isNaN(valorFecha.getTime()); //Si la fecha es inválida (un número o un "hola" por ejemplo), getTime() va a devolver NaN
+};
+
+/**Compruebo que una fecha sea válida y que no esté en el futuro.*/
+let validarFechaNoFutura = (fecha) => {
+  if (!validarFecha(fecha)) {
+    return false;
+  }
+
+  //Comparo la fecha indicada con la fecha y hora actuales.
+  return new Date(fecha) <= new Date();
 };
 
 let guardarSueno = async (req, res) => {
   try {
-    let {bebe_id, inicio} = req.body;
+    let { bebe_id, inicio } = req.body;
 
     //Comprobar los campos obligatorios
-    if (!validarId(bebe_id) || !validarFecha(inicio)) {
+    if (!validarId(bebe_id) || !validarFechaNoFutura(inicio)) {
       return res.status(400).json({
         message: "Debes indicar un bebé válido y una hora de inicio válida",
       });
@@ -36,7 +47,7 @@ let guardarSueno = async (req, res) => {
     let fin = req.body.fin ?? null;
 
     //Comprobar la fecha de finalización si se ha indicado
-    if (fin !== null && !validarFecha(fin)) {
+    if (fin !== null && !validarFechaNoFutura(fin)) {
       return res.status(400).json({
         message: "La hora de finalización no es válida",
       });
@@ -151,7 +162,7 @@ let actualizarSueno = async (req, res) => {
     //Validar la fecha de inicio si se quiere modificar
     if (
       datosActualizados.inicio !== undefined &&
-      !validarFecha(datosActualizados.inicio)
+      !validarFechaNoFutura(datosActualizados.inicio)
     ) {
       return res.status(400).json({
         message: "La hora de inicio no es válida",
@@ -162,7 +173,7 @@ let actualizarSueno = async (req, res) => {
     if (
       datosActualizados.fin !== undefined &&
       datosActualizados.fin !== null &&
-      !validarFecha(datosActualizados.fin)
+      !validarFechaNoFutura(datosActualizados.fin)
     ) {
       return res.status(400).json({
         message: "La hora de finalización no es válida",
