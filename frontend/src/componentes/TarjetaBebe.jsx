@@ -49,6 +49,10 @@ function TarjetaBebe(props) {
         >
           Ver alimentaciones
         </button>
+        
+        <button type="button" onClick={() => props.alVerSuenos(props.id)}>
+          Ver sueño
+        </button>
       </div>
     </article>
   );

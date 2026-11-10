@@ -5,6 +5,7 @@ import TarjetaBebe from "./componentes/TarjetaBebe.jsx";
 import FormularioBebe from "./componentes/FormularioBebe.jsx";
 import FormularioEdicionBebe from "./componentes/FormularioEdicionBebe.jsx";
 import SeccionAlimentaciones from "./componentes/SeccionAlimentaciones.jsx";
+import SeccionSuenos from "./componentes/SeccionSuenos.jsx";
 
 function App() {
   /*Estados de variables*/
@@ -23,6 +24,9 @@ function App() {
   //Si vale null, significa que no hemos abierto ninguna sección.
   let [bebeAlimentaciones, setBebeAlimentaciones] = useState(null);
 
+  //Guardo el ID del bebé cuyo historial de sueño estoy consultando.
+  let [bebeSuenos, setBebeSuenos] = useState(null);
+
   //Funciones que reciben el ID que le envía la tarjeta y lo guarda en el estado para que React sepa qué bebé se ha seleccionado..
   let seleccionarBebe = (id) => {
     setBebeEditando(id);
@@ -35,6 +39,16 @@ function App() {
   //Función que cierra la sección de alimentaciones.
   let cerrarAlimentaciones = () => {
     setBebeAlimentaciones(null); //Poner a null para indicar que no hay ninguna sección de alimentaciones abierta
+  };
+
+  //Abro la sección de sueño del bebé seleccionado.
+  let verSuenos = (id) => {
+    setBebeSuenos(id);
+  };
+
+  //Cierro la sección de sueño y limpio el bebé seleccionado.
+  let cerrarSuenos = () => {
+    setBebeSuenos(null);
   };
 
   //Función para volver a cargar los bebés después de registrar uno nuevo.
@@ -139,6 +153,8 @@ function App() {
                 alEliminar={eliminarBebe}
                 //conectar el botón ver alimentaciones con la función
                 alVerAlimentaciones={verAlimentaciones}
+                //conectar el botón ver sueños con la función
+                alVerSuenos={verSuenos}
               />
             ))}
             {bebes.length === 0 && mensaje === "" && (
@@ -161,11 +177,22 @@ function App() {
               nombreBebe={
                 bebes.find(
                   (bebe) => String(bebe.id) === String(bebeAlimentaciones),
-                )?.nombre//el signo ? evita un error. Si encuentra al bebé devuelve su propiedad nombre, si no, devuelve undefined sin provocar error
+                )?.nombre //el signo ? evita un error. Si encuentra al bebé devuelve su propiedad nombre, si no, devuelve undefined sin provocar error
               }
-              bebeId={bebeAlimentaciones}//Pasar el id
+              bebeId={bebeAlimentaciones} //Pasar el id
               alCerrar={cerrarAlimentaciones}
-              
+            />
+          )}
+
+          {/*Muestro la sección de sueño solo cuando se ha seleccionado un bebé.*/}
+          {bebeSuenos !== null && (
+            <SeccionSuenos
+              nombreBebe={
+                bebes.find((bebe) => String(bebe.id) === String(bebeSuenos))
+                  ?.nombre
+              }
+              bebeId={bebeSuenos}
+              alCerrar={cerrarSuenos}
             />
           )}
         </section>
