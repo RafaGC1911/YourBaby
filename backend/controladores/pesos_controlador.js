@@ -1,3 +1,4 @@
+
 let {
   crearPeso,
   obtenerPesos: obtenerPesosModelo,
@@ -11,7 +12,7 @@ let validarId = (id) => {
   return Number.isInteger(Number(id)) && Number(id) > 0;
 };
 
-//Comprobar que una fecha exista y tenga el formato
+//Comprobar que una fecha exista y tenga el formato AAAA-MM-DD
 let validarFecha = (fecha) => {
   if (typeof fecha !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
     return false;
@@ -19,7 +20,27 @@ let validarFecha = (fecha) => {
 
   let fechaConvertida = new Date(`${fecha}T00:00:00Z`);
 
-  return !Number.isNaN(fechaConvertida.getTime());
+  //Compruebo también que JavaScript no haya transformado una fecha inexistente
+  return (
+    !Number.isNaN(fechaConvertida.getTime()) &&
+    fechaConvertida.toISOString().slice(0, 10) === fecha
+  );
+};
+
+//Comprobar que la fecha no sea posterior al día actual
+let validarFechaNoFutura = (fecha) => {
+  if (!validarFecha(fecha)) {
+    return false;
+  }
+
+  //Obtengo la fecha actual en formato AAAA-MM-DD usando la hora local
+  let ahora = new Date();
+  let anio = ahora.getFullYear();
+  let mes = String(ahora.getMonth() + 1).padStart(2, "0");
+  let dia = String(ahora.getDate()).padStart(2, "0");
+  let fechaActual = `${anio}-${mes}-${dia}`;
+
+  return fecha <= fechaActual;
 };
 
 //Crear una medición de peso
@@ -41,7 +62,7 @@ let guardarPeso = async (req, res) => {
       });
     }
 
-    //Comprobar que el peso sea un número dentro del rango
+    //Comprobar que el peso sea un número mayor que 0 y menor que 30 kg
     if (
       peso === null ||
       peso === "" ||
@@ -54,10 +75,10 @@ let guardarPeso = async (req, res) => {
       });
     }
 
-    //Comprobar que la fecha sea válida
-    if (!validarFecha(fecha)) {
+    //Comprobar que la fecha sea válida y no sea futura
+    if (!validarFechaNoFutura(fecha)) {
       return res.status(400).json({
-        message: "La fecha debe ser válida y tener el formato AAAA-MM-DD",
+        message: "La fecha debe ser válida y no puede ser futura",
       });
     }
 
@@ -89,7 +110,10 @@ let obtenerPesos = async (req, res) => {
   try {
     let [pesos] = await obtenerPesosModelo();
 
-    return res.status(200).json(pesos);
+    return res.status(200).json({
+      message: "Mediciones obtenidas correctamente",
+      data: pesos,
+    });
   } catch (error) {
     console.error("Error al obtener las mediciones:", error);
 
@@ -113,7 +137,10 @@ let obtenerPesosPorBebe = async (req, res) => {
 
     let [pesos] = await obtenerPesosPorBebeModelo(bebeId);
 
-    return res.status(200).json(pesos);
+    return res.status(200).json({
+      message: "Mediciones del bebé obtenidas correctamente",
+      data: pesos,
+    });
   } catch (error) {
     console.error("Error al obtener las mediciones del bebé:", error);
 
@@ -149,15 +176,12 @@ let actualizarPeso = async (req, res) => {
 
     //Lista de campos que permitimos modificar
     let camposPermitidos = ["bebe_id", "peso", "fecha", "observaciones"];
-
     let camposRecibidos = Object.keys(peso);
 
-    //Rechazar los campos que no estén en la lista
     /**
-     * some() recorre los elementos de camposRecibidos y comprueba si alguno cumple una condición.
-     * includes(campo) comprueba si ese campo está dentro de camposPermitidos.
-     * Invierte el resultado con ! porque busco un campo que no esté permitido
-     * Si encuentra alguno, some() devuelve true. Si todos están permitidos devuelve false.
+     * some() recorre los campos recibidos y comprueba si alguno no está permitido.
+     * includes() comprueba si un campo pertenece a la lista de campos permitidos.
+     * Si encuentra un campo que no está en la lista, rechazamos la actualización.
      */
     let campoNoPermitido = camposRecibidos.some(
       (campo) => !camposPermitidos.includes(campo),
@@ -182,26 +206,26 @@ let actualizarPeso = async (req, res) => {
 
     //Validar el peso si se quiere modificar
     if (peso.peso !== undefined) {
-      //Comprueba si el usuario ha enviado el campo peso antes de seguir
       if (
         peso.peso === null ||
         peso.peso === "" ||
-        !Number.isFinite(Number(bebe.peso_nacimiento)) ||
+        !Number.isFinite(Number(peso.peso)) ||
         Number(peso.peso) <= 0 ||
-        Number(peso.peso) >= 10000
+        Number(peso.peso) >= 30
       ) {
         return res.status(400).json({
-          message: "El peso debe ser un número mayor que 0 y menor que 10 kg",
+          message: "El peso debe ser un número mayor que 0 y menor que 30 kg",
         });
       }
 
-      peso.peso = Number(peso.peso); //Convertirlo porque los datos enviados en un JSON pueden llegar como texto si el usuario escribe "4.5" por ejemplo
+      //Convierto el valor a número antes de enviarlo al modelo
+      peso.peso = Number(peso.peso);
     }
 
     //Validar la fecha si se quiere modificar
-    if (peso.fecha !== undefined && !validarFecha(peso.fecha)) {
+    if (peso.fecha !== undefined && !validarFechaNoFutura(peso.fecha)) {
       return res.status(400).json({
-        message: "La fecha debe ser válida y tener el formato AAAA-MM-DD",
+        message: "La fecha debe ser válida y no puede ser futura",
       });
     }
 
