@@ -17,9 +17,9 @@ function FormularioEdicionSueno(props) {
   );
 
   //Función que se ejecuta al guardar los cambios del registro.
-  let guardarSueno = async (event) => {
+  let guardarSueno = async (e) => {
     //Evito que el navegador recargue la página al enviar el formulario.
-    event.preventDefault();
+    e.preventDefault();
 
     //Limpio los mensajes anteriores antes de realizar una nueva operación.
     props.setMensaje("");
@@ -105,7 +105,7 @@ function FormularioEdicionSueno(props) {
           id="inicio-edicion"
           value={inicio}
           max={`${fechaMaxima}T23:59`}
-          onChange={(event) => setInicio(event.target.value)}
+          onChange={(e) => setInicio(e.target.value)}
           required
         />
       </div>
@@ -117,7 +117,7 @@ function FormularioEdicionSueno(props) {
           id="fin-edicion"
           value={fin}
           max={`${fechaMaxima}T23:59`}
-          onChange={(event) => setFin(event.target.value)}
+          onChange={(e) => setFin(e.target.value)}
         />
       </div>
 
@@ -126,7 +126,7 @@ function FormularioEdicionSueno(props) {
         <textarea
           id="observaciones-edicion"
           value={observaciones}
-          onChange={(event) => setObservaciones(event.target.value)}
+          onChange={(e) => setObservaciones(e.target.value)}
           placeholder="Añade alguna observación si lo necesitas..."
         />
       </div>

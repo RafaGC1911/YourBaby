@@ -545,7 +545,6 @@ button:disabled {
   margin: 0;
 }
 
-
 /*Organizo los botones de cada registro de sueño para que tengan separación.*/
 .acciones-sueno {
   display: flex;
@@ -558,7 +557,6 @@ button:disabled {
 .acciones-sueno button {
   margin: 0;
 }
-
 
 /*ESTILOS DE LA SECCIÓN DE SUEÑO*/
 
@@ -706,5 +704,121 @@ button:disabled {
 
   .boton-guardar-sueno {
     width: 100%;
+  }
+}
+
+/*SECCIÓN DE PAÑALES*/
+.seccion-panales {
+  background-color: var(--color-superficie);
+  padding: 25px;
+  border-radius: 16px;
+  margin-top: 25px;
+}
+
+.historial-panales {
+  margin-top: 25px;
+}
+
+.lista-panales {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.tarjeta-panal {
+  background-color: var(--color-fondo);
+  border: 1px solid var(--color-beige);
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.tarjeta-panal p {
+  margin: 8px 0;
+}
+
+.etiqueta-panal {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.etiqueta-pipi {
+  background-color: #dceaf2;
+  color: #315d78;
+}
+
+.etiqueta-caca {
+  background-color: #eadbcb;
+  color: #755338;
+}
+
+.etiqueta-mixto {
+  background-color: #dcebdd;
+  color: #39734d;
+}
+
+.acciones-panal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.formulario-panal,
+.formulario-edicion-panal {
+  background-color: var(--color-fondo);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.campo-panal {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 15px;
+}
+
+.campo-panal input,
+.campo-panal select,
+.campo-panal textarea {
+  padding: 10px;
+  border: 1px solid var(--color-arena);
+  border-radius: 8px;
+  background-color: var(--color-superficie);
+  color: var(--color-texto);
+  font: inherit;
+}
+
+.campo-panal textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.boton-guardar-panal {
+  background-color: var(--color-marron);
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.acciones-formulario-edicion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+@media (max-width: 600px) {
+  .seccion-panales {
+    padding: 16px;
+  }
+
+  .lista-panales {
+    grid-template-columns: 1fr;
   }
 }

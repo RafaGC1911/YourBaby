@@ -14,9 +14,9 @@ function FormularioSueno(props) {
   let [observaciones, setObservaciones] = useState("");
 
   //Función que se ejecuta al enviar el formulario para registrar un nuevo sueño.
-  let registrarSueno = async (event) => {
+  let registrarSueno = async (e) => {
     //Evito que el navegador recargue la página al enviar el formulario.
-    event.preventDefault();
+    e.preventDefault();
 
     //Limpio los mensajes anteriores para que no se mezclen con el resultado de esta operación.
     props.setMensaje("");
@@ -96,7 +96,7 @@ function FormularioSueno(props) {
           type="datetime-local"
           id="inicio"
           value={inicio}
-          onChange={(event) => setInicio(event.target.value)}
+          onChange={(e) => setInicio(e.target.value)}
           max={`${fechaMaxima}T23:59`}
           required
         />
@@ -109,7 +109,7 @@ function FormularioSueno(props) {
           id="fin"
           value={fin}
           max={`${fechaMaxima}T23:59`}
-          onChange={(event) => setFin(event.target.value)}
+          onChange={(e) => setFin(e.target.value)}
         />
       </div>
 
@@ -118,7 +118,7 @@ function FormularioSueno(props) {
         <textarea
           id="observaciones"
           value={observaciones}
-          onChange={(event) => setObservaciones(event.target.value)}
+          onChange={(e) => setObservaciones(e.target.value)}
           placeholder="Añade alguna observación si lo necesitas..."
         />
       </div>

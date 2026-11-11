@@ -6,6 +6,7 @@ import FormularioBebe from "./componentes/FormularioBebe.jsx";
 import FormularioEdicionBebe from "./componentes/FormularioEdicionBebe.jsx";
 import SeccionAlimentaciones from "./componentes/SeccionAlimentaciones.jsx";
 import SeccionSuenos from "./componentes/SeccionSuenos.jsx";
+import SeccionPanales from "./componentes/SeccionPanales.jsx";
 
 function App() {
   /*Estados de variables*/
@@ -26,6 +27,9 @@ function App() {
 
   //Guardo el ID del bebé cuyo historial de sueño estoy consultando.
   let [bebeSuenos, setBebeSuenos] = useState(null);
+
+  //Guardo el ID del bebé cuyos pañales estoy consultando.
+  let [bebePanales, setBebePanales] = useState(null);
 
   //Funciones que reciben el ID que le envía la tarjeta y lo guarda en el estado para que React sepa qué bebé se ha seleccionado..
   let seleccionarBebe = (id) => {
@@ -49,6 +53,16 @@ function App() {
   //Cierro la sección de sueño y limpio el bebé seleccionado.
   let cerrarSuenos = () => {
     setBebeSuenos(null);
+  };
+
+  //Abro la sección de pañales del bebé seleccionado.
+  let verPanales = (id) => {
+    setBebePanales(id);
+  };
+
+  //Cierro la sección de pañales.
+  let cerrarPanales = () => {
+    setBebePanales(null);
   };
 
   //Función para volver a cargar los bebés después de registrar uno nuevo.
@@ -155,6 +169,8 @@ function App() {
                 alVerAlimentaciones={verAlimentaciones}
                 //conectar el botón ver sueños con la función
                 alVerSuenos={verSuenos}
+                //conectar el botón ver pañales con la función
+                alVerPanales={verPanales}
               />
             ))}
             {bebes.length === 0 && mensaje === "" && (
@@ -193,6 +209,18 @@ function App() {
               }
               bebeId={bebeSuenos}
               alCerrar={cerrarSuenos}
+            />
+          )}
+          
+          {/*Muestro la sección de pañales solo cuando se ha seleccionado un bebé.*/}
+          {bebePanales !== null && (
+            <SeccionPanales
+              nombreBebe={
+                bebes.find((bebe) => String(bebe.id) === String(bebePanales))
+                  ?.nombre
+              }
+              bebeId={bebePanales}
+              alCerrar={cerrarPanales}
             />
           )}
         </section>

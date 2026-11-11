@@ -58,7 +58,7 @@ let guardarPanal = async (req, res) => {
     //Comprobar que la fecha sea válida
     if (!validarFechaNoFutura(fecha_hora)) {
       return res.status(400).json({
-        message: "La fecha y hora no son válidas",
+        message: "La fecha y hora no pueden ser posteriores al momento actual",
       });
     }
 
