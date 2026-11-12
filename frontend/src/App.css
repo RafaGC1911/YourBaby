@@ -937,3 +937,41 @@ button:disabled {
   text-align: center;
   padding: 20px 0;
 }
+
+/*Adapto las cabeceras de las secciones a pantallas pequeñas*/
+@media (max-width: 600px) {
+  .cabecera-alimentaciones {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .cabecera-alimentaciones .boton-cerrar {
+    width: 100%;
+  }
+}
+/*Evito que los elementos de los formularios desborden su contenedor*/
+form,
+label,
+input,
+select,
+textarea {
+  min-width: 0;
+}
+/*Aumento ligeramente la altura mínima de los botones*/
+button {
+  min-height: 44px;
+}
+/*Adapto el espacio general cuando la pantalla tiene un ancho intermedio*/
+@media (max-width: 800px) {
+  #root {
+    padding: 18px;
+  }
+
+  .seccion-alimentaciones,
+  .seccion-suenos,
+  .seccion-panales,
+  .seccion-pesos {
+    padding: 20px;
+  }
+}

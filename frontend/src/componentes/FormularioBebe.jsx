@@ -137,6 +137,8 @@ function FormularioBebe(props) {
         </label>
 
         <button type="submit">Registrar bebé</button>
+
+         
       </form>
     </section>
   );

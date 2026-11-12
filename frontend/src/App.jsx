@@ -14,69 +14,65 @@ function App() {
   let [bebes, setBebes] = useState([]); //bebes contiene la lista actual, setBebes sirve para actualizar esa lista.
   let [mensaje, setMensaje] = useState("Cargando bebés...");
 
-  //Guarda el ID del bebé que quiero editar.
-  //Si vale null, significa que no estamos editando ninguno.
-  let [bebeEditando, setBebeEditando] = useState(null);
+  //Guardo que sección está abierta y el ID del bebé seleccionado.
+  //Si tipo vale null, significa que no estamos dentro de ninguna sección.
+  let [seccionActiva, setSeccionActiva] = useState({
+    tipo: null,
+    bebeId: null,
+  });
 
-  //Buscar en la lista el bebé cuyo ID he seleccionado.
+  //Busco en la lista el bebé cuyo ID coincide con el que he seleccionado.
   //Si no hay ninguno seleccionado, el resultado será undefined.
-  let bebeSeleccionado = bebes.find((bebe) => bebe.id === bebeEditando);
+  let bebeSeleccionado = bebes.find((bebe) => bebe.id === seccionActiva.bebeId);
 
-  //Guarda el ID del bebé cuyas alimentaciones queremos consultar.
-  //Si vale null, significa que no hemos abierto ninguna sección.
-  let [bebeAlimentaciones, setBebeAlimentaciones] = useState(null);
+  //Funciones que reciben el ID que le envía la tarjeta y lo guardan en el estado para que React sepa qué sección debe mostrar.
 
-  //Guardo el ID del bebé cuyo historial de sueño estoy consultando.
-  let [bebeSuenos, setBebeSuenos] = useState(null);
-
-  //Guardo el ID del bebé cuyos pañales estoy consultando.
-  let [bebePanales, setBebePanales] = useState(null);
-
-  //Guardo el ID del bebé cuyo peso estoy consultando.
-  let [bebePesos, setBebePesos] = useState(null);
-
-  //Funciones que reciben el ID que le envía la tarjeta y lo guarda en el estado para que React sepa qué bebé se ha seleccionado..
+  //Guardo el ID del bebé que quiero editar y activo el formulario de edición.
   let seleccionarBebe = (id) => {
-    setBebeEditando(id);
+    setSeccionActiva({
+      tipo: "edicion",
+      bebeId: id,
+    });
   };
 
+  //Abro la sección de alimentaciones del bebé seleccionado.
   let verAlimentaciones = (id) => {
-    setBebeAlimentaciones(id);
-  };
-
-  //Función que cierra la sección de alimentaciones.
-  let cerrarAlimentaciones = () => {
-    setBebeAlimentaciones(null); //Poner a null para indicar que no hay ninguna sección de alimentaciones abierta
+    setSeccionActiva({
+      tipo: "alimentaciones",
+      bebeId: id,
+    });
   };
 
   //Abro la sección de sueño del bebé seleccionado.
   let verSuenos = (id) => {
-    setBebeSuenos(id);
-  };
-
-  //Cierro la sección de sueño y limpio el bebé seleccionado.
-  let cerrarSuenos = () => {
-    setBebeSuenos(null);
+    setSeccionActiva({
+      tipo: "suenos",
+      bebeId: id,
+    });
   };
 
   //Abro la sección de pañales del bebé seleccionado.
   let verPanales = (id) => {
-    setBebePanales(id);
+    setSeccionActiva({
+      tipo: "panales",
+      bebeId: id,
+    });
   };
 
-  //Cierro la sección de pañales.
-  let cerrarPanales = () => {
-    setBebePanales(null);
-  };
-
-  //Abrir la sección de pesos del bebé seleccionado
+  //Abro la sección de pesos del bebé seleccionado.
   let verPesos = (id) => {
-    setBebePesos(id);
+    setSeccionActiva({
+      tipo: "pesos",
+      bebeId: id,
+    });
   };
 
-  //Cerrar la sección de pesos
-  let cerrarPesos = () => {
-    setBebePesos(null);
+  //Cierro cualquier sección abierta y vuelvo a la pantalla principal.
+  let volverInicio = () => {
+    setSeccionActiva({
+      tipo: null,
+      bebeId: null,
+    });
   };
 
   //Función para volver a cargar los bebés después de registrar uno nuevo.
@@ -150,108 +146,98 @@ function App() {
     obtenerBebes();
   }, []);
 
-  /*******RENDERIZADO******** */
+  /*******RENDERIZADO*******/
   return (
     //CABECERA
     <div className="contenedor-principal">
       <Cabecera />
+
       <main>
-        {/**FORMULARIO */}
-        <section className="seccion-formulario">
-          <FormularioBebe alRegistrar={actualizarBebes} />
-        </section>
+        {/*Si no hay ninguna sección abierta, muestro la pantalla principal.*/}
+        {seccionActiva.tipo === null && (
+          <div>
+            {/*FORMULARIO DE REGISTRO*/}
+            <section className="seccion-formulario">
+              <FormularioBebe alRegistrar={actualizarBebes} />
+            </section>
 
-        {/**TARJETAS BEBÉS */}
-        <section className="seccion-bebes">
-          <h2>Bebés registrados</h2>
+            {/*TARJETAS DE LOS BEBÉS*/}
+            <section className="seccion-bebes">
+              <h2>Bebés registrados</h2>
 
-          {mensaje !== "" && <p>{mensaje}</p>}
+              {mensaje !== "" && <p>{mensaje}</p>}
 
-          <div className="lista-bebes">
-            {bebes.map((bebe) => (
-              <TarjetaBebe
-                key={bebe.id}
-                id={bebe.id}
-                nombre={bebe.nombre}
-                fechaNacimiento={bebe.fecha_nacimiento}
-                pesoNacimiento={bebe.peso_nacimiento}
-                //conectar el botón editar con la función seleccionarBebe
-                alEditar={seleccionarBebe}
-                //conectar el botón eliminar con la función eliminarBebe
-                alEliminar={eliminarBebe}
-                //conectar el botón ver alimentaciones con la función
-                alVerAlimentaciones={verAlimentaciones}
-                //conectar el botón ver sueños con la función
-                alVerSuenos={verSuenos}
-                //conectar el botón ver pañales con la función
-                alVerPanales={verPanales}
-                //conectar el botón ver pesos con la función
-                alVerPesos={verPesos}
-              />
-            ))}
-            {bebes.length === 0 && mensaje === "" && (
-              <p>No hay bebés registrados</p>
-            )}
+              <div className="lista-bebes">
+                {bebes.map((bebe) => (
+                  <TarjetaBebe
+                    key={bebe.id}
+                    id={bebe.id}
+                    nombre={bebe.nombre}
+                    fechaNacimiento={bebe.fecha_nacimiento}
+                    pesoNacimiento={bebe.peso_nacimiento}
+                    alEditar={seleccionarBebe}
+                    alEliminar={eliminarBebe}
+                    alVerAlimentaciones={verAlimentaciones}
+                    alVerSuenos={verSuenos}
+                    alVerPanales={verPanales}
+                    alVerPesos={verPesos}
+                  />
+                ))}
+
+                {bebes.length === 0 && mensaje === "" && (
+                  <p>No hay bebés registrados</p>
+                )}
+              </div>
+            </section>
           </div>
+        )}
 
-          {/*Solo mostrar el formulario si se ha seleccionado un bebé */}
-          {bebeSeleccionado && (
-            <FormularioEdicionBebe
-              key={bebeSeleccionado.id}
-              bebe={bebeSeleccionado}
-              alGuardar={actualizarBebes}
-            />
-          )}
+        {/*Si hay una sección activa, muestro únicamente el módulo seleccionado.*/}
 
-          {/* Mostrar las alimentaciones del bebé seleccionado */}
-          {bebeAlimentaciones !== null && (
-            <SeccionAlimentaciones
-              nombreBebe={
-                bebes.find(
-                  (bebe) => String(bebe.id) === String(bebeAlimentaciones),
-                )?.nombre //el signo ? evita un error. Si encuentra al bebé devuelve su propiedad nombre, si no, devuelve undefined sin provocar error
-              }
-              bebeId={bebeAlimentaciones} //Pasar el id
-              alCerrar={cerrarAlimentaciones}
-            />
-          )}
+        {seccionActiva.tipo === "edicion" && bebeSeleccionado && (
+          <FormularioEdicionBebe
+            key={bebeSeleccionado.id}
+            bebe={bebeSeleccionado}
+            alGuardar={actualizarBebes}
+            alCancelar={volverInicio}
+          />
+        )}
 
-          {/*Muestro la sección de sueño solo cuando se ha seleccionado un bebé.*/}
-          {bebeSuenos !== null && (
-            <SeccionSuenos
-              nombreBebe={
-                bebes.find((bebe) => String(bebe.id) === String(bebeSuenos))
-                  ?.nombre
-              }
-              bebeId={bebeSuenos}
-              alCerrar={cerrarSuenos}
-            />
-          )}
+        {seccionActiva.tipo === "alimentaciones" && bebeSeleccionado && (
+          <SeccionAlimentaciones
+            key={bebeSeleccionado.id}
+            nombreBebe={bebeSeleccionado.nombre}
+            bebeId={bebeSeleccionado.id}
+            alCerrar={volverInicio}
+          />
+        )}
 
-          {/*Muestro la sección de pañales solo cuando se ha seleccionado un bebé.*/}
-          {bebePanales !== null && (
-            <SeccionPanales
-              nombreBebe={
-                bebes.find((bebe) => String(bebe.id) === String(bebePanales))
-                  ?.nombre
-              }
-              bebeId={bebePanales}
-              alCerrar={cerrarPanales}
-            />
-          )}
+        {seccionActiva.tipo === "suenos" && bebeSeleccionado && (
+          <SeccionSuenos
+            key={bebeSeleccionado.id}
+            nombreBebe={bebeSeleccionado.nombre}
+            bebeId={bebeSeleccionado.id}
+            alCerrar={volverInicio}
+          />
+        )}
 
-          {/*Muestro la sección de pesos solo cuando se ha seleccionado un bebé.*/}
-          {bebePesos !== null && (
-            <SeccionPesos
-              nombreBebe={
-                bebes.find((bebe) => String(bebe.id) === String(bebePesos))
-                  ?.nombre
-              }
-              bebeId={bebePesos}
-              alCerrar={cerrarPesos}
-            />
-          )}
-        </section>
+        {seccionActiva.tipo === "panales" && bebeSeleccionado && (
+          <SeccionPanales
+            key={bebeSeleccionado.id}
+            nombreBebe={bebeSeleccionado.nombre}
+            bebeId={bebeSeleccionado.id}
+            alCerrar={volverInicio}
+          />
+        )}
+
+        {seccionActiva.tipo === "pesos" && bebeSeleccionado && (
+          <SeccionPesos
+            key={bebeSeleccionado.id}
+            nombreBebe={bebeSeleccionado.nombre}
+            bebeId={bebeSeleccionado.id}
+            alCerrar={volverInicio}
+          />
+        )}
       </main>
     </div>
   );

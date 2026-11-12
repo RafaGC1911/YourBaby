@@ -93,7 +93,6 @@ function FormularioEdicionBebe(props) {
   //Obtengo la fecha actual en formato YYYY-MM-DD.
   let hoy = new Date();
   let fechaMaxima = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
-  
 
   return (
     <section className="formulario-bebe">
@@ -141,6 +140,10 @@ function FormularioEdicionBebe(props) {
         </label>
 
         <button type="submit">Guardar cambios</button>
+
+        <button type="button" onClick={props.alCancelar}>
+          Cancelar
+        </button>
       </form>
     </section>
   );
