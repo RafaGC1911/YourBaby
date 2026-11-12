@@ -7,6 +7,7 @@ import FormularioEdicionBebe from "./componentes/FormularioEdicionBebe.jsx";
 import SeccionAlimentaciones from "./componentes/SeccionAlimentaciones.jsx";
 import SeccionSuenos from "./componentes/SeccionSuenos.jsx";
 import SeccionPanales from "./componentes/SeccionPanales.jsx";
+import SeccionPesos from "./componentes/SeccionPesos";
 
 function App() {
   /*Estados de variables*/
@@ -30,6 +31,9 @@ function App() {
 
   //Guardo el ID del bebé cuyos pañales estoy consultando.
   let [bebePanales, setBebePanales] = useState(null);
+
+  //Guardo el ID del bebé cuyo peso estoy consultando.
+  let [bebePesos, setBebePesos] = useState(null);
 
   //Funciones que reciben el ID que le envía la tarjeta y lo guarda en el estado para que React sepa qué bebé se ha seleccionado..
   let seleccionarBebe = (id) => {
@@ -63,6 +67,16 @@ function App() {
   //Cierro la sección de pañales.
   let cerrarPanales = () => {
     setBebePanales(null);
+  };
+
+  //Abrir la sección de pesos del bebé seleccionado
+  let verPesos = (id) => {
+    setBebePesos(id);
+  };
+
+  //Cerrar la sección de pesos
+  let cerrarPesos = () => {
+    setBebePesos(null);
   };
 
   //Función para volver a cargar los bebés después de registrar uno nuevo.
@@ -171,6 +185,8 @@ function App() {
                 alVerSuenos={verSuenos}
                 //conectar el botón ver pañales con la función
                 alVerPanales={verPanales}
+                //conectar el botón ver pesos con la función
+                alVerPesos={verPesos}
               />
             ))}
             {bebes.length === 0 && mensaje === "" && (
@@ -211,7 +227,7 @@ function App() {
               alCerrar={cerrarSuenos}
             />
           )}
-          
+
           {/*Muestro la sección de pañales solo cuando se ha seleccionado un bebé.*/}
           {bebePanales !== null && (
             <SeccionPanales
@@ -221,6 +237,18 @@ function App() {
               }
               bebeId={bebePanales}
               alCerrar={cerrarPanales}
+            />
+          )}
+
+          {/*Muestro la sección de pesos solo cuando se ha seleccionado un bebé.*/}
+          {bebePesos !== null && (
+            <SeccionPesos
+              nombreBebe={
+                bebes.find((bebe) => String(bebe.id) === String(bebePesos))
+                  ?.nombre
+              }
+              bebeId={bebePesos}
+              alCerrar={cerrarPesos}
             />
           )}
         </section>
