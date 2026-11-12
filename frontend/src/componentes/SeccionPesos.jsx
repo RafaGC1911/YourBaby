@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import FormularioPeso from "./FormularioPeso";
 import FormularioEdicionPeso from "./FormularioEdicionPeso";
+import GraficaPeso from "./GraficaPeso";
 
 function SeccionPesos(props) {
   let [pesos, setPesos] = useState([]);
@@ -100,9 +101,10 @@ function SeccionPesos(props) {
 
       {mensaje && <p className={`mensaje mensaje-${tipoMensaje}`}>{mensaje}</p>}
 
+      <GraficaPeso pesos={pesos} />{/**Le paso los pesos guardados en el estado */}
+
       <div className="historial-pesos">
         <h3>Historial de peso</h3>
-
         {pesos.length === 0 ? (
           <p>No hay mediciones de peso registradas.</p>
         ) : (
