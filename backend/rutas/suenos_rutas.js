@@ -1,5 +1,6 @@
 let express = require("express");
 let router = express.Router();
+let verificarToken = require("../middleware/autenticacion");
 
 let {
   guardarSueno,
@@ -8,6 +9,8 @@ let {
   actualizarSueno,
   eliminarSueno,
 } = require("../controladores/suenos_controlador");
+
+router.use(verificarToken);
 
 router.post("/", guardarSueno);
 router.get("/", obtenerSuenos);

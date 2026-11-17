@@ -1,6 +1,7 @@
 
 let express = require("express");
 let router = express.Router();
+let verificarToken = require("../middleware/autenticacion");
 
 let {
     guardarPeso,
@@ -9,6 +10,8 @@ let {
     actualizarPeso,
     eliminarPeso
 } = require("../controladores/pesos_controlador");
+
+router.use(verificarToken);
 
 // Crear una medición
 router.post("/", guardarPeso);
