@@ -27,7 +27,7 @@ function FormularioLogin({ alIniciarSesion }) {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",//Importante, sin esto no se envía la cookie JWT al backend
+        credentials: "include", //Importante, sin esto no se envía la cookie JWT al backend
         body: JSON.stringify({
           nombre_usuario: nombreUsuario,
           contrasena: contrasena,
@@ -60,23 +60,30 @@ function FormularioLogin({ alIniciarSesion }) {
   return (
     <div className="contenedor-login">
       <section className="formulario-login">
-        <h1>Bienvenido a YourBaby</h1>
-        <p>Inicia sesión para acceder a tu espacio familiar.</p>
+        <div className="cabecera-login">
+          <h1>YourBaby</h1>
+          <p>Tu pequeño mundo, siempre contigo.</p>
+        </div>
+
+        <div className="introduccion-login">
+          <h2>¡Bienvenidos!</h2>
+          <p>Inicia sesión para acceder a tu espacio familiar.</p>
+        </div>
 
         <form onSubmit={iniciarSesion}>
-          <div className="campo-formulario">
+          <div className="campo-login">
             <label htmlFor="nombre_usuario">Nombre de usuario</label>
             <input
               type="text"
               id="nombre_usuario"
               value={nombreUsuario}
               onChange={(e) => setNombreUsuario(e.target.value)}
-              autoComplete="username"/**Indica al navegador qué tipo de dato contiene cada campo. Así puede ofrecer guardar y autocompletar las credenciales. */
+              autoComplete="username"
               required
             />
           </div>
 
-          <div className="campo-formulario">
+          <div className="campo-login">
             <label htmlFor="contrasena">Contraseña</label>
             <input
               type="password"

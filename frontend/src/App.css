@@ -975,3 +975,104 @@ button {
     padding: 20px;
   }
 }
+
+
+/*ESTILOS DE LA PANTALLA DE INICIO DE SESIÓN*/
+
+.contenedor-login {
+  min-height: calc(100vh - 48px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 15px;
+}
+
+/*Tarjeta principal del formulario*/
+.formulario-login {
+  width: 100%;
+  max-width: 430px;
+  padding: 40px;
+  background-color: var(--color-superficie);
+  border: 1px solid var(--color-beige);
+  border-radius: 18px;
+  box-shadow: 0 5px 20px rgba(73, 61, 50, 0.08);
+}
+
+/*Cabecera con el nombre de la aplicación*/
+.cabecera-login {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.cabecera-login h1 {
+  margin: 0;
+  font-size: 32px;
+  color: var(--color-marron-oscuro);
+}
+
+.cabecera-login p {
+  margin: 8px 0 0;
+  color: var(--color-texto-secundario);
+  font-size: 14px;
+}
+
+/*Texto de bienvenida*/
+.introduccion-login {
+  margin-bottom: 25px;
+}
+
+.introduccion-login h2 {
+  margin: 0 0 8px;
+  font-size: 23px;
+}
+
+.introduccion-login p {
+  margin: 0;
+  color: var(--color-texto-secundario);
+  font-size: 14px;
+}
+
+/*Organizo los campos del formulario*/
+.campo-login {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo-login label {
+  font-size: 14px;
+}
+
+.campo-login input {
+  padding: 13px;
+  border: 1px solid var(--color-arena);
+  border-radius: 8px;
+  background-color: white;
+}
+
+/*Destaco el campo que está utilizando el usuario*/
+.campo-login input:focus {
+  outline: none;
+  border-color: var(--color-marron);
+  box-shadow: 0 0 0 3px rgba(139, 115, 93, 0.15);
+}
+
+/*Botón de inicio de sesión*/
+.formulario-login button {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px;
+  border-radius: 8px;
+}
+
+/*Adapto el formulario a dispositivos móviles*/
+@media (max-width: 600px) {
+  .contenedor-login {
+    min-height: calc(100vh - 24px);
+    padding: 15px 5px;
+  }
+
+  .formulario-login {
+    padding: 28px 22px;
+  }
+}
