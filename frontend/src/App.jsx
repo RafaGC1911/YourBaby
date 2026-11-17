@@ -8,10 +8,18 @@ import SeccionAlimentaciones from "./componentes/SeccionAlimentaciones.jsx";
 import SeccionSuenos from "./componentes/SeccionSuenos.jsx";
 import SeccionPanales from "./componentes/SeccionPanales.jsx";
 import SeccionPesos from "./componentes/SeccionPesos";
+import FormularioLogin from "./componentes/FormularioLogin.jsx";
 
 function App() {
   /*Estados de variables*/
-  let [bebes, setBebes] = useState([]); //bebes contiene la lista actual, setBebes sirve para actualizar esa lista.
+
+  //Guardo los datos del usuario que ha iniciado sesión
+  let [usuario, setUsuario] = useState(null);
+
+  //Indico si estoy comprobando si existe una sesión válida
+  let [comprobandoSesion, setComprobandoSesion] = useState(true);
+
+  let [bebes, setBebes] = useState([]);
   let [mensaje, setMensaje] = useState("Cargando bebés...");
 
   //Guardo que sección está abierta y el ID del bebé seleccionado.
@@ -24,6 +32,39 @@ function App() {
   //Busco en la lista el bebé cuyo ID coincide con el que he seleccionado.
   //Si no hay ninguno seleccionado, el resultado será undefined.
   let bebeSeleccionado = bebes.find((bebe) => bebe.id === seccionActiva.bebeId);
+
+  /*
+  Función para comprobar si el navegador conserva una sesión válida.
+  El backend verifica la cookie JWT y devuelve los datos del usuario
+  si el token sigue siendo válido.
+  */
+  let verificarSesion = async () => {
+    try {
+      let response = await fetch("http://localhost:3000/api/auth/verificar", {
+        credentials: "include",
+      });
+
+      //Si no existe una sesión válida, dejo al usuario sin identificar
+      if (!response.ok) {
+        setUsuario(null);
+        return;
+      }
+
+      let responseData = await response.json();
+
+      //Guardo los datos del usuario que devuelve el backend
+      setUsuario(responseData.data);
+
+      //Una vez identificado, cargo los bebés de la familia
+      await actualizarBebes();
+    } catch (error) {
+      console.error("Error al comprobar la sesión:", error);
+      setUsuario(null);
+    } finally {
+      //Indico que ya he terminado de comprobar la sesión
+      setComprobandoSesion(false);
+    }
+  };
 
   //Funciones que reciben el ID que le envía la tarjeta y lo guardan en el estado para que React sepa qué sección debe mostrar.
 
@@ -78,7 +119,9 @@ function App() {
   //Función para volver a cargar los bebés después de registrar uno nuevo.
   let actualizarBebes = async () => {
     try {
-      let response = await fetch("http://localhost:3000/api/bebes");
+      let response = await fetch("http://localhost:3000/api/bebes", {
+        credentials: "include",
+      });
 
       if (!response.ok) {
         throw new Error("No se pudieron actualizar los bebés");
@@ -87,15 +130,19 @@ function App() {
       let responseData = await response.json();
 
       setBebes(responseData.data);
+
+      //Limpio el mensaje cuando la actualización se realiza correctamente
+      setMensaje("");
     } catch (error) {
-      setMensaje(`Error al actualizar los bebés ${error.message}`);
+      setMensaje("Error al actualizar los bebés");
     }
   };
 
   //Eliminar un bebé
   let eliminarBebe = async (id) => {
     setMensaje("");
-    // Pedimos confirmación antes de borrar el bebé.
+
+    //Pedimos confirmación antes de borrar el bebé.
     let confirmar = window.confirm("¿Eliminar este bebé?");
 
     //Si el usuario cancela, sale
@@ -106,6 +153,7 @@ function App() {
     try {
       let response = await fetch(`http://localhost:3000/api/bebes/${id}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       let responseData = await response.json();
@@ -119,38 +167,77 @@ function App() {
       await actualizarBebes();
     } catch (error) {
       console.error("Error al eliminar el bebé:", error);
-      setMensaje(`Error al eliminar el bebé`);
+      setMensaje("Error al eliminar el bebé");
     }
   };
 
-  useEffect(() => {
-    async function obtenerBebes() {
-      try {
-        //La API contesta con un objeto cuyas propiedades son message, y data. Este último contiene un array de objetos
-        let response = await fetch("http://localhost:3000/api/bebes");
+  /*
+  Función para cerrar la sesión del usuario.
+  Envío una petición al backend para eliminar la cookie JWT
+  y después limpio los estados de React.
+  */
+  let cerrarSesion = async () => {
+    try {
+      let response = await fetch("http://localhost:3000/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
 
-        if (!response.ok) {
-          throw new Error("No se pudieron obtener los bebés");
-        }
-
-        //He llamado responseData al objeto completo para distinguirlo de data que es la propiedad que contiene el array de bebés que viene de la api
-        let responseData = await response.json();
-
-        setBebes(responseData.data);
-        setMensaje("");
-      } catch (error) {
-        setMensaje("Error al cargar los bebés");
+      if (!response.ok) {
+        throw new Error("No se pudo cerrar la sesión");
       }
-    }
 
-    obtenerBebes();
+      //Limpio los datos que estaban cargados en React
+      setUsuario(null);
+      setBebes([]);
+      setMensaje("");
+      volverInicio();
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+      setMensaje("No se pudo cerrar la sesión. Inténtalo de nuevo.");
+    }
+  };
+
+  //Compruebo si existe una sesión cuando se carga la aplicación
+  useEffect(() => {
+    verificarSesion();
   }, []);
 
-  /*******RENDERIZADO*******/
+  /******* RENDERIZADO *******/
+
+  //Mientras compruebo la sesión, no muestro el contenido de la aplicación
+  if (comprobandoSesion) {
+    return (
+      <div className="contenedor-principal">
+        <p>Comprobando sesión...</p>
+      </div>
+    );
+  }
+
+  //Si no existe un usuario identificado, muestro el formulario de login
+  if (!usuario) {
+    return (
+      <FormularioLogin
+        alIniciarSesion={(datosUsuario) => {
+          setUsuario(datosUsuario);
+          actualizarBebes();
+        }}
+      />
+    );
+  }
+
+  //Si existe una sesión válida, muestro la aplicación
   return (
-    //CABECERA
     <div className="contenedor-principal">
+      {/*CABECERA*/}
       <Cabecera />
+
+      {/*Botón para cerrar la sesión*/}
+      <div className="zona-cerrar-sesion">
+        <button type="button" onClick={cerrarSesion}>
+          Cerrar sesión
+        </button>
+      </div>
 
       <main>
         {/*Si no hay ninguna sección abierta, muestro la pantalla principal.*/}

@@ -33,7 +33,9 @@ function SeccionAlimentaciones(props) {
   let obtenerAlimentaciones = async () => {
     try {
       let response = await fetch(
-        `http://localhost:3000/api/alimentaciones/bebe/${props.bebeId}`,
+        `http://localhost:3000/api/alimentaciones/bebe/${props.bebeId}`,{
+          credentials: "include",
+        }
       );
 
       if (!response.ok) {
@@ -81,7 +83,9 @@ function SeccionAlimentaciones(props) {
         `http://localhost:3000/api/alimentaciones/${id}`,
         {
           method: "DELETE",
+          credentials: "include",
         },
+        
       );
 
       let responseData = await response.json();

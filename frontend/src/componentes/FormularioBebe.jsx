@@ -59,6 +59,7 @@ function FormularioBebe(props) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(bebe),
       });
 

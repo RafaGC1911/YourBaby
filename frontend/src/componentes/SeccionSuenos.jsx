@@ -17,7 +17,9 @@ function SeccionSuenos(props) {
   let obtenerSuenos = async () => {
     try {
       let response = await fetch(
-        `http://localhost:3000/api/suenos/bebe/${props.bebeId}`,
+        `http://localhost:3000/api/suenos/bebe/${props.bebeId}`,{
+          credentials: "include",
+        }
       );
 
       if (!response.ok) {
@@ -73,6 +75,7 @@ function SeccionSuenos(props) {
     try {
       let response = await fetch(`http://localhost:3000/api/suenos/${id}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       let responseData = await response.json();

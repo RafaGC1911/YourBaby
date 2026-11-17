@@ -13,7 +13,9 @@ function SeccionPanales(props) {
   let obtenerPanales = async () => {
     try {
       let response = await fetch(
-        `http://localhost:3000/api/panales/bebe/${props.bebeId}`,
+        `http://localhost:3000/api/panales/bebe/${props.bebeId}`,{
+          credentials: "include",
+        }
       );
 
       let responseData = await response.json();
@@ -66,6 +68,7 @@ function SeccionPanales(props) {
     try {
       let response = await fetch(`http://localhost:3000/api/panales/${id}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       let responseData = await response.json();

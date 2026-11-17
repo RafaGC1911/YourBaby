@@ -13,7 +13,9 @@ function SeccionPesos(props) {
   let obtenerPesos = async () => {
     try {
       let response = await fetch(
-        `http://localhost:3000/api/pesos/bebe/${props.bebeId}`,
+        `http://localhost:3000/api/pesos/bebe/${props.bebeId}`,{
+          credentials: "include",
+        }
       );
 
       let responseData = await response.json();
@@ -58,6 +60,7 @@ function SeccionPesos(props) {
     try {
       let response = await fetch(`http://localhost:3000/api/pesos/${id}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       let responseData = await response.json();

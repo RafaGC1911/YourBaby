@@ -26,6 +26,7 @@ function FormularioEdicionPeso(props) {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include",
           body: JSON.stringify({
             peso: Number(peso),
             fecha,

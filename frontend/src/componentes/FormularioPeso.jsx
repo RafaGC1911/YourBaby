@@ -22,6 +22,7 @@ function FormularioPeso(props) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           bebe_id: Number(props.bebeId),
           peso: Number(peso),
