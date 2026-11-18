@@ -12,6 +12,7 @@ let {
   iniciarSesion,
   cerrarSesion,
   verificarSesion,
+  registrarUsuario,
 } = require("../controladores/usuarios_controlador");
 
 //Importo el middleware que comprueba el JWT
@@ -25,6 +26,9 @@ router.post("/logout", cerrarSesion);
 
 //Ruta protegida para comprobar si existe una sesión válida. Lleva middleware, ejecuta las dos funciones de verificación
 router.get("/verificar", verificarToken, verificarSesion);
+
+//Ruta pública para registrar una nueva cuenta
+router.post("/registro", registrarUsuario);
 
 //Exporto las rutas para utilizarlas desde servidor.js
 module.exports = router;

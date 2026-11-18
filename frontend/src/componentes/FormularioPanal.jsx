@@ -103,7 +103,7 @@ function FormularioPanal(props) {
       </div>
 
       {mensaje && (
-        <p className={`mensaje ${tipoMensaje}`}>
+        <p className={`mensaje mensaje-${tipoMensaje}`}>
           {mensaje}
         </p>
       )}

@@ -66,7 +66,7 @@ let validarFechaNoFutura = (fecha) => {
 // Obtener todos los bebés
 let obtenerBebes = async (req, res) => {
   try {
-    let [bebes] = await obtenerBebesModelo();
+    let [bebes] = await obtenerBebesModelo(req.usuario.id); //Así solamente recupero los bebés del usuario que ha iniciado sesión.
 
     res.json({
       message: "Bebés obtenidos correctamente",
@@ -90,7 +90,7 @@ let obtenerBebeId = async (req, res) => {
   }
 
   try {
-    let [bebes] = await obtenerBebeIdModelo(req.params.id);
+    let [bebes] = await obtenerBebeIdModelo(req.params.id, req.usuario.id);
 
     if (bebes.length === 0) {
       return res.status(404).json({
@@ -122,7 +122,7 @@ let guardarBebe = async (req, res) => {
   }
 
   try {
-    let [resultado] = await crearBebe(req.body);
+    let [resultado] = await crearBebe(req.usuario.id, req.body);
 
     res.status(201).json({
       message: "Bebé creado correctamente",
@@ -191,7 +191,6 @@ let actualizarBebe = async (req, res) => {
     datosActualizados.nombre = datosActualizados.nombre.trim();
   }
 
-  
   //Comprobar la fecha solo si se quiere modificar.
   if (datosActualizados.fecha_nacimiento !== undefined) {
     let errorFecha = validarFechaNoFutura(datosActualizados.fecha_nacimiento);
@@ -202,7 +201,6 @@ let actualizarBebe = async (req, res) => {
       });
     }
   }
-
 
   // Comprobar el peso solo si se quiere modificar
   if (datosActualizados.peso_nacimiento !== undefined) {
@@ -227,7 +225,7 @@ let actualizarBebe = async (req, res) => {
 
   try {
     // Buscar el bebé para comprobar que existe
-    let [bebes] = await obtenerBebeIdModelo(req.params.id);
+    let [bebes] = await obtenerBebeIdModelo(req.params.id, req.usuario.id);
 
     if (bebes.length === 0) {
       return res.status(404).json({
@@ -236,7 +234,11 @@ let actualizarBebe = async (req, res) => {
     }
 
     // Enviar al modelo el ID y únicamente los campos que queremos modificar
-    await actualizarBebeModelo(req.params.id, datosActualizados);
+    await actualizarBebeModelo(
+      req.params.id,
+      req.usuario.id,
+      datosActualizados,
+    );
 
     // Informar de que la actualización se ha realizado correctamente
     res.json({
@@ -262,7 +264,7 @@ let eliminarBebe = async (req, res) => {
   }
 
   try {
-    let [resultado] = await eliminarBebeModelo(req.params.id);
+    let [resultado] = await eliminarBebeModelo(req.params.id, req.usuario.id);
 
     if (resultado.affectedRows === 0) {
       return res.status(404).json({

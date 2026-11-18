@@ -1,38 +1,45 @@
 let conexion = require("../configuracion/base_datos");
 
-let crearBebe = (bebe) => {
+//Crear un bebé y asociarlo al usuario que ha iniciado sesión
+let crearBebe = (usuarioId, bebe) => {
   let sql = `
   INSERT INTO bebes
-  (nombre, fecha_nacimiento, peso_nacimiento)
-  VALUES (?, ?, ?)
+  (usuario_id, nombre, fecha_nacimiento, peso_nacimiento)
+  VALUES (?, ?, ?, ?)
   `;
 
   return conexion
     .promise()
-    .query(sql, [bebe.nombre, bebe.fecha_nacimiento, bebe.peso_nacimiento]);
+    .query(sql, [
+      usuarioId,
+      bebe.nombre,
+      bebe.fecha_nacimiento,
+      bebe.peso_nacimiento,
+    ]);
 };
 
-/**
- * Necesito promise() para convertir la conexión y que funcione con promesas, así luego podré usar la asincronía cuando llame a la función desde
- * el front.
- * .query() recibe la plantilla SQL y el array de valores que vienen del objeto "bebe".
- *
- */
-
-let obtenerBebes = () => {
+//Obtener únicamente los bebés del usuario que ha iniciado sesión
+let obtenerBebes = (usuarioId) => {
   let sql = `
   SELECT * FROM bebes
+  WHERE usuario_id = ?
   `;
 
-  return conexion.promise().query(sql);
+  return conexion.promise().query(sql, [usuarioId]);
 };
 
-let obtenerBebeId = (id) => {
-  let sql = `SELECT * FROM bebes WHERE id = ?`;
-  return conexion.promise().query(sql, [id]);
+//Obtener un bebé comprobando su ID y quién es su propietario
+let obtenerBebeId = (id, usuarioId) => {
+  let sql = `
+  SELECT * FROM bebes
+  WHERE id = ? AND usuario_id = ?
+  `;
+
+  return conexion.promise().query(sql, [id, usuarioId]);
 };
 
-let actualizarBebe = (id, bebe) => {
+//Actualizar un bebé comprobando que pertenece al usuario
+let actualizarBebe = (id, usuarioId, bebe) => {
   let campos = [];
   let valores = [];
 
@@ -51,16 +58,25 @@ let actualizarBebe = (id, bebe) => {
     valores.push(bebe.peso_nacimiento);
   }
 
-  let sql = `UPDATE bebes SET ${campos.join(", ")} WHERE id = ? `;
+  let sql = `
+  UPDATE bebes
+  SET ${campos.join(", ")}
+  WHERE id = ? AND usuario_id = ?
+  `;
 
-  valores.push(id);
+  valores.push(id, usuarioId);
 
   return conexion.promise().query(sql, valores);
 };
 
-let eliminarBebe = (id) => {
-  let sql = `DELETE FROM bebes WHERE id = ?`;
-  return conexion.promise().query(sql, [id]);
+//Eliminar un bebé comprobando que pertenece al usuario
+let eliminarBebe = (id, usuarioId) => {
+  let sql = `
+  DELETE FROM bebes
+  WHERE id = ? AND usuario_id = ?
+  `;
+
+  return conexion.promise().query(sql, [id, usuarioId]);
 };
 
 module.exports = {
