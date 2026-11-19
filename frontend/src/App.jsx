@@ -232,12 +232,7 @@ function App() {
       {/*CABECERA*/}
       <Cabecera />
 
-      {/*Botón para cerrar la sesión*/}
-      <div className="zona-cerrar-sesion">
-        <button type="button" onClick={cerrarSesion}>
-          Cerrar sesión
-        </button>
-      </div>
+     
 
       <main>
         {/*Si no hay ninguna sección abierta, muestro la pantalla principal.*/}
@@ -326,7 +321,15 @@ function App() {
           />
         )}
       </main>
+
+       {/*Botón para cerrar la sesión*/}
+      <div className="zona-cerrar-sesion">
+        <button type="button" onClick={cerrarSesion}>
+          Cerrar sesión
+        </button>
+      </div>
     </div>
+    
   );
 }
 

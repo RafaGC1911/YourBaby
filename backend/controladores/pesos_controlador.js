@@ -1,6 +1,6 @@
-
 let {
   crearPeso,
+  comprobarBebeUsuario,
   obtenerPesos: obtenerPesosModelo,
   obtenerPesosPorBebe: obtenerPesosPorBebeModelo,
   actualizarPeso: actualizarPesoModelo,
@@ -48,21 +48,21 @@ let guardarPeso = async (req, res) => {
   try {
     let { bebe_id, peso, fecha, observaciones } = req.body;
 
-    //Comprobar que se hayan enviado los campos obligatorios
+    //Compruebo que se hayan enviado los campos obligatorios
     if (bebe_id === undefined || peso === undefined || !fecha) {
       return res.status(400).json({
         message: "El bebé, el peso y la fecha son obligatorios",
       });
     }
 
-    //Comprobar que el ID del bebé sea válido
+    //Compruebo que el ID del bebé sea válido
     if (!validarId(bebe_id)) {
       return res.status(400).json({
         message: "El ID del bebé debe ser un número entero positivo",
       });
     }
 
-    //Comprobar que el peso sea un número mayor que 0 y menor que 30 kg
+    //Compruebo que el peso sea un número mayor que 0 y menor que 30 kg
     if (
       peso === null ||
       peso === "" ||
@@ -75,14 +75,23 @@ let guardarPeso = async (req, res) => {
       });
     }
 
-    //Comprobar que la fecha sea válida y no sea futura
+    //Compruebo que la fecha sea válida y no sea futura
     if (!validarFechaNoFutura(fecha)) {
       return res.status(400).json({
         message: "La fecha debe ser válida y no puede ser futura",
       });
     }
 
-    //Preparar los datos antes de enviarlos al modelo
+    //Compruebo que el bebé pertenece al usuario autenticado
+    let [bebes] = await comprobarBebeUsuario(Number(bebe_id), req.usuario.id);
+
+    if (bebes.length === 0) {
+      return res.status(404).json({
+        message: "Bebé no encontrado",
+      });
+    }
+
+    //Preparo los datos antes de enviarlos al modelo
     let nuevoPeso = {
       bebe_id: Number(bebe_id),
       peso: Number(peso),
@@ -105,10 +114,10 @@ let guardarPeso = async (req, res) => {
   }
 };
 
-//Obtener todas las mediciones
+//Obtener todas las mediciones del usuario
 let obtenerPesos = async (req, res) => {
   try {
-    let [pesos] = await obtenerPesosModelo();
+    let [pesos] = await obtenerPesosModelo(req.usuario.id);
 
     return res.status(200).json({
       message: "Mediciones obtenidas correctamente",
@@ -128,14 +137,14 @@ let obtenerPesosPorBebe = async (req, res) => {
   try {
     let { bebeId } = req.params;
 
-    //Comprobar que el ID del bebé sea válido
+    //Compruebo que el ID del bebé sea válido
     if (!validarId(bebeId)) {
       return res.status(400).json({
         message: "El ID del bebé debe ser un número entero positivo",
       });
     }
 
-    let [pesos] = await obtenerPesosPorBebeModelo(bebeId);
+    let [pesos] = await obtenerPesosPorBebeModelo(bebeId, req.usuario.id);
 
     return res.status(200).json({
       message: "Mediciones del bebé obtenidas correctamente",
@@ -156,14 +165,14 @@ let actualizarPeso = async (req, res) => {
     let { id } = req.params;
     let peso = req.body ?? {};
 
-    //Comprobar que el ID de la medición sea válido
+    //Compruebo que el ID de la medición sea válido
     if (!validarId(id)) {
       return res.status(400).json({
         message: "El ID de la medición no es válido",
       });
     }
 
-    //Comprobar que se haya enviado al menos un campo
+    //Compruebo que se haya enviado al menos un campo
     if (
       typeof peso !== "object" ||
       Array.isArray(peso) ||
@@ -174,14 +183,14 @@ let actualizarPeso = async (req, res) => {
       });
     }
 
-    //Lista de campos que permitimos modificar
+    //Lista de campos que permito modificar
     let camposPermitidos = ["bebe_id", "peso", "fecha", "observaciones"];
     let camposRecibidos = Object.keys(peso);
 
     /**
      * some() recorre los campos recibidos y comprueba si alguno no está permitido.
      * includes() comprueba si un campo pertenece a la lista de campos permitidos.
-     * Si encuentra un campo que no está en la lista, rechazamos la actualización.
+     * Si encuentra un campo que no está en la lista, rechazo la actualización.
      */
     let campoNoPermitido = camposRecibidos.some(
       (campo) => !camposPermitidos.includes(campo),
@@ -193,7 +202,7 @@ let actualizarPeso = async (req, res) => {
       });
     }
 
-    //Validar el ID del bebé si se quiere modificar
+    //Valido el ID del bebé si se quiere modificar
     if (peso.bebe_id !== undefined) {
       if (!validarId(peso.bebe_id)) {
         return res.status(400).json({
@@ -201,10 +210,22 @@ let actualizarPeso = async (req, res) => {
         });
       }
 
+      //Compruebo que el nuevo bebé también pertenece al usuario
+      let [bebes] = await comprobarBebeUsuario(
+        Number(peso.bebe_id),
+        req.usuario.id,
+      );
+
+      if (bebes.length === 0) {
+        return res.status(404).json({
+          message: "Bebé no encontrado",
+        });
+      }
+
       peso.bebe_id = Number(peso.bebe_id);
     }
 
-    //Validar el peso si se quiere modificar
+    //Valido el peso si se quiere modificar
     if (peso.peso !== undefined) {
       if (
         peso.peso === null ||
@@ -222,14 +243,14 @@ let actualizarPeso = async (req, res) => {
       peso.peso = Number(peso.peso);
     }
 
-    //Validar la fecha si se quiere modificar
+    //Valido la fecha si se quiere modificar
     if (peso.fecha !== undefined && !validarFechaNoFutura(peso.fecha)) {
       return res.status(400).json({
         message: "La fecha debe ser válida y no puede ser futura",
       });
     }
 
-    //Comprobar que las observaciones sean texto o null
+    //Compruebo que las observaciones sean texto o null
     if (
       peso.observaciones !== undefined &&
       peso.observaciones !== null &&
@@ -240,7 +261,8 @@ let actualizarPeso = async (req, res) => {
       });
     }
 
-    let [resultado] = await actualizarPesoModelo(id, peso);
+    //Actualizo únicamente si la medición pertenece al usuario
+    let [resultado] = await actualizarPesoModelo(id, req.usuario.id, peso);
 
     if (resultado.affectedRows === 0) {
       return res.status(404).json({
@@ -265,14 +287,15 @@ let eliminarPeso = async (req, res) => {
   try {
     let { id } = req.params;
 
-    //Comprobar que el ID de la medición sea válido
+    //Compruebo que el ID de la medición sea válido
     if (!validarId(id)) {
       return res.status(400).json({
         message: "El ID de la medición no es válido",
       });
     }
 
-    let [resultado] = await eliminarPesoModelo(id);
+    //Elimino únicamente si la medición pertenece al usuario
+    let [resultado] = await eliminarPesoModelo(id, req.usuario.id);
 
     if (resultado.affectedRows === 0) {
       return res.status(404).json({
