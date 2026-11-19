@@ -1,7 +1,12 @@
+
 import { useState } from "react";
+import FormularioRegistro from "./FormularioRegistro.jsx";
 
 //Formulario para iniciar sesión en YourBaby
 function FormularioLogin({ alIniciarSesion }) {
+  //Indico si quiero mostrar el formulario de registro en lugar del login
+  let [mostrarRegistro, setMostrarRegistro] = useState(false);
+
   //Guardo los datos que introduce el usuario
   let [nombreUsuario, setNombreUsuario] = useState("");
   let [contrasena, setContrasena] = useState("");
@@ -12,6 +17,15 @@ function FormularioLogin({ alIniciarSesion }) {
 
   //Indico si se está enviando la petición al servidor
   let [cargando, setCargando] = useState(false);
+
+  //Si el usuario quiere registrarse, muestro el componente de registro
+  if (mostrarRegistro) {
+    return (
+      <FormularioRegistro
+        alVolverLogin={() => setMostrarRegistro(false)}
+      />
+    );
+  }
 
   //Función para enviar las credenciales al backend
   let iniciarSesion = async (e) => {
@@ -27,7 +41,7 @@ function FormularioLogin({ alIniciarSesion }) {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", //Importante, sin esto no se envía la cookie JWT al backend
+        credentials: "include",
         body: JSON.stringify({
           nombre_usuario: nombreUsuario,
           contrasena: contrasena,
@@ -38,7 +52,9 @@ function FormularioLogin({ alIniciarSesion }) {
 
       //Compruebo si el servidor ha rechazado las credenciales
       if (!response.ok) {
-        throw new Error(responseData.message || "No se pudo iniciar sesión");
+        throw new Error(
+          responseData.message || "No se pudo iniciar sesión",
+        );
       }
 
       //Indico que el inicio de sesión se ha realizado correctamente
@@ -103,6 +119,14 @@ function FormularioLogin({ alIniciarSesion }) {
             {cargando ? "Iniciando sesión..." : "Iniciar sesión"}
           </button>
         </form>
+
+        <button
+          type="button"
+          className="boton-secundario-login"
+          onClick={() => setMostrarRegistro(true)}
+        >
+          ¿No tienes cuenta? Regístrate
+        </button>
       </section>
     </div>
   );

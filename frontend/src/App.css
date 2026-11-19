@@ -1076,3 +1076,20 @@ button {
     padding: 28px 22px;
   }
 }
+
+
+/*Botón para cambiar entre el inicio de sesión y el registro*/
+.boton-secundario-login {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  background-color: transparent;
+  color: var(--color-marron);
+  border: 1px solid var(--color-arena);
+}
+
+/*Cambio el aspecto del botón cuando el usuario pasa el ratón*/
+.boton-secundario-login:hover {
+  background-color: var(--color-fondo);
+  color: var(--color-marron-oscuro);
+}
