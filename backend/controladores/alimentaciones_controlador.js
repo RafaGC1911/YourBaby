@@ -1,16 +1,18 @@
 let {
   crearAlimentacion,
+  comprobarBebeUsuario,
   obtenerAlimentaciones: obtenerAlimentacionesModelo,
   obtenerAlimentacionesPorBebe: obtenerAlimentacionesPorBebeModelo,
   actualizarAlimentacion: actualizarAlimentacionModelo,
   eliminarAlimentacion: eliminarAlimentacionModelo,
 } = require("../modelos/alimentaciones_modelo");
 
+//Registrar una alimentación
 let guardarAlimentacion = async (req, res) => {
   try {
     let alimentacion = req.body;
 
-    // Comprobar los campos obligatorios
+    //Comprobar los campos obligatorios
     if (
       !alimentacion.bebe_id ||
       !Number.isInteger(Number(alimentacion.bebe_id)) ||
@@ -24,7 +26,7 @@ let guardarAlimentacion = async (req, res) => {
       });
     }
 
-    // La cantidad es opcional, pero debe ser positiva si se indica
+    //La cantidad es opcional, pero debe ser positiva si se indica
     if (
       alimentacion.cantidad_ml !== undefined &&
       alimentacion.cantidad_ml !== null &&
@@ -37,6 +39,18 @@ let guardarAlimentacion = async (req, res) => {
       });
     }
 
+    //Comprobar que el bebé pertenece al usuario que ha iniciado sesión
+    let [bebes] = await comprobarBebeUsuario(
+      Number(alimentacion.bebe_id),
+      req.usuario.id,
+    );
+
+    if (bebes.length === 0) {
+      return res.status(404).json({
+        message: "Bebé no encontrado",
+      });
+    }
+
     let datosAlimentacion = {
       bebe_id: Number(alimentacion.bebe_id),
       tipo: alimentacion.tipo.trim(),
@@ -44,7 +58,7 @@ let guardarAlimentacion = async (req, res) => {
       cantidad_ml:
         alimentacion.cantidad_ml === undefined ||
         alimentacion.cantidad_ml === ""
-          ? null //La cantidad de alimentación puede ser null porque cuando es de tipo pecho (por ejemplo) no la conocemos
+          ? null
           : alimentacion.cantidad_ml,
       observaciones: alimentacion.observaciones || null,
     };
@@ -60,15 +74,17 @@ let guardarAlimentacion = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+
     res.status(500).json({
       message: "Error al registrar la alimentación",
     });
   }
 };
 
+//Obtener todas las alimentaciones del usuario
 let obtenerAlimentaciones = async (req, res) => {
   try {
-    let [alimentaciones] = await obtenerAlimentacionesModelo();
+    let [alimentaciones] = await obtenerAlimentacionesModelo(req.usuario.id);
 
     res.json({
       message: "Alimentaciones obtenidas correctamente",
@@ -76,12 +92,14 @@ let obtenerAlimentaciones = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+
     res.status(500).json({
       message: "Error al obtener las alimentaciones",
     });
   }
 };
 
+//Obtener las alimentaciones de un bebé
 let obtenerAlimentacionesPorBebe = async (req, res) => {
   try {
     let bebeId = req.params.bebeId;
@@ -92,7 +110,10 @@ let obtenerAlimentacionesPorBebe = async (req, res) => {
       });
     }
 
-    let [alimentaciones] = await obtenerAlimentacionesPorBebeModelo(bebeId);
+    let [alimentaciones] = await obtenerAlimentacionesPorBebeModelo(
+      bebeId,
+      req.usuario.id,
+    );
 
     res.json({
       message: "Alimentaciones del bebé obtenidas correctamente",
@@ -100,12 +121,14 @@ let obtenerAlimentacionesPorBebe = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+
     res.status(500).json({
       message: "Error al obtener las alimentaciones del bebé",
     });
   }
 };
 
+//Actualizar una alimentación
 let actualizarAlimentacion = async (req, res) => {
   try {
     let id = req.params.id;
@@ -117,7 +140,7 @@ let actualizarAlimentacion = async (req, res) => {
       });
     }
 
-    // Solo permito modificar estos campos
+    //Solo permito modificar estos campos
     let camposPermitidos = [
       "tipo",
       "fecha_hora",
@@ -169,7 +192,12 @@ let actualizarAlimentacion = async (req, res) => {
       datosActualizados.cantidad_ml = null;
     }
 
-    let [resultado] = await actualizarAlimentacionModelo(id, datosActualizados);
+    //Actualizar únicamente si la alimentación pertenece al usuario
+    let [resultado] = await actualizarAlimentacionModelo(
+      id,
+      req.usuario.id,
+      datosActualizados,
+    );
 
     if (resultado.affectedRows === 0) {
       return res.status(404).json({
@@ -182,12 +210,14 @@ let actualizarAlimentacion = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+
     res.status(500).json({
       message: "Error al actualizar alimentación",
     });
   }
 };
 
+//Eliminar una alimentación
 let eliminarAlimentacion = async (req, res) => {
   try {
     let id = req.params.id;
@@ -198,7 +228,8 @@ let eliminarAlimentacion = async (req, res) => {
       });
     }
 
-    let [resultado] = await eliminarAlimentacionModelo(id);
+    //Eliminar únicamente si la alimentación pertenece al usuario
+    let [resultado] = await eliminarAlimentacionModelo(id, req.usuario.id);
 
     if (resultado.affectedRows === 0) {
       return res.status(404).json({
@@ -211,6 +242,7 @@ let eliminarAlimentacion = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+
     res.status(500).json({
       message: "Error al eliminar la alimentación",
     });

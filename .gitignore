@@ -3,6 +3,7 @@ node_modules/
 .env.*
 !.env.example
 
+
 # #Esto hará que Git no suba:
 
 # node_modules → dependencias instaladas.

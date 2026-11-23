@@ -1,84 +1,116 @@
 let conexion = require("../configuracion/base_datos");
 
+//Crear una nueva medición de peso
 let crearPeso = (peso) => {
   let sql = `
-        INSERT INTO pesos
-        (bebe_id, peso, fecha, observaciones)
-        VALUES (?, ?, ?, ?)
-    `;
+    INSERT INTO pesos
+    (bebe_id, peso, fecha, observaciones)
+    VALUES (?, ?, ?, ?)
+  `;
 
   return conexion
     .promise()
     .query(sql, [peso.bebe_id, peso.peso, peso.fecha, peso.observaciones]);
 };
 
-let obtenerPesos = () => {
+//Comprobar que un bebé pertenece al usuario que ha iniciado sesión
+let comprobarBebeUsuario = (bebeId, usuarioId) => {
   let sql = `
-        SELECT *
-        FROM pesos
-        ORDER BY fecha DESC, id DESC
-    `;//Ordenado para que aparezca de más reciente a más antigua
+    SELECT id
+    FROM bebes
+    WHERE id = ? AND usuario_id = ?
+  `;
 
-  return conexion.promise().query(sql);
+  return conexion.promise().query(sql, [bebeId, usuarioId]);
 };
 
-let obtenerPesosPorBebe = (bebeId) => {
+//Obtener todas las mediciones de los bebés del usuario
+let obtenerPesos = (usuarioId) => {
   let sql = `
-        SELECT *
-        FROM pesos
-        WHERE bebe_id = ?
-        ORDER BY fecha DESC, id DESC
-    `;
+    SELECT pesos.*
+    FROM pesos
+    INNER JOIN bebes
+    ON pesos.bebe_id = bebes.id
+    WHERE bebes.usuario_id = ?
+    ORDER BY pesos.fecha DESC, pesos.id DESC
+  `;
 
-  return conexion.promise().query(sql, [bebeId]);
+  return conexion.promise().query(sql, [usuarioId]);
 };
 
-let actualizarPeso = (id, peso) => {
+//Obtener las mediciones de un bebé comprobando su propietario
+let obtenerPesosPorBebe = (bebeId, usuarioId) => {
+  let sql = `
+    SELECT pesos.*
+    FROM pesos
+    INNER JOIN bebes
+    ON pesos.bebe_id = bebes.id
+    WHERE pesos.bebe_id = ?
+    AND bebes.usuario_id = ?
+    ORDER BY pesos.fecha DESC, pesos.id DESC
+  `;
+
+  return conexion.promise().query(sql, [bebeId, usuarioId]);
+};
+
+//Actualizar una medición comprobando que pertenece al usuario
+let actualizarPeso = (id, usuarioId, peso) => {
   let campos = [];
   let valores = [];
 
+  //Voy añadiendo a la consulta únicamente los campos recibidos
   if (peso.bebe_id !== undefined) {
-    campos.push("bebe_id = ?");
+    campos.push("pesos.bebe_id = ?");
     valores.push(peso.bebe_id);
   }
 
   if (peso.peso !== undefined) {
-    campos.push("peso = ?");
+    campos.push("pesos.peso = ?");
     valores.push(peso.peso);
   }
 
   if (peso.fecha !== undefined) {
-    campos.push("fecha = ?");
+    campos.push("pesos.fecha = ?");
     valores.push(peso.fecha);
   }
 
   if (peso.observaciones !== undefined) {
-    campos.push("observaciones = ?");
+    campos.push("pesos.observaciones = ?");
     valores.push(peso.observaciones);
   }
 
   let sql = `
-        UPDATE pesos
-        SET ${campos.join(", ")}
-        WHERE id = ?
-    `;
+    UPDATE pesos
+    INNER JOIN bebes
+    ON pesos.bebe_id = bebes.id
+    SET ${campos.join(", ")}
+    WHERE pesos.id = ?
+    AND bebes.usuario_id = ?
+  `;
 
-  valores.push(id);
+  //Añado el ID de la medición y el usuario al final de los parámetros
+  valores.push(id, usuarioId);
 
   return conexion.promise().query(sql, valores);
 };
 
-let eliminarPeso = (id) => {
+//Eliminar una medición comprobando que pertenece al usuario
+let eliminarPeso = (id, usuarioId) => {
   let sql = `
-        DELETE FROM pesos
-        WHERE id = ?
-    `;
+    DELETE pesos
+    FROM pesos
+    INNER JOIN bebes
+    ON pesos.bebe_id = bebes.id
+    WHERE pesos.id = ?
+    AND bebes.usuario_id = ?
+  `;
 
-  return conexion.promise().query(sql, [id]);
+  return conexion.promise().query(sql, [id, usuarioId]);
 };
 
 module.exports = {
   crearPeso,
+  comprobarBebeUsuario,
   obtenerPesos,
   obtenerPesosPorBebe,
   actualizarPeso,

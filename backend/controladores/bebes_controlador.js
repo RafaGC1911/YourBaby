@@ -16,30 +16,48 @@ let validarBebe = (bebe) => {
     return "El nombre es obligatorio";
   }
 
-  //Validar que tenga el formato de fecha correcto para que mysql trabaje luego
-  if (
-    !bebe.fecha_nacimiento ||
-    !/^\d{4}-\d{2}-\d{2}$/.test(bebe.fecha_nacimiento)
-  ) {
-    return "La fecha debe tener el formato YYYY-MM-DD";
-  }
+  //Validar que la fecha sea correcta y no sea futura.
+  let errorFecha = validarFechaNoFutura(bebe.fecha_nacimiento);
 
-  //Validar que sea una fecha válida, que el usuario no ponga 30 de febrero por ejemplo
-  let fecha = new Date(bebe.fecha_nacimiento + "T00:00:00Z");
-
-  if (
-    isNaN(fecha.getTime()) ||
-    fecha.toISOString().slice(0, 10) !== bebe.fecha_nacimiento
-  ) {
-    return "La fecha de nacimiento no es válida";
+  if (errorFecha) {
+    return errorFecha;
   }
 
   if (
     !bebe.peso_nacimiento ||
     isNaN(bebe.peso_nacimiento) ||
-    Number(bebe.peso_nacimiento) <= 0
+    !Number.isFinite(Number(bebe.peso_nacimiento)) || //Comprueba que el valor convertido sea un número finito, así evita valores como Infinity o texto que no se puede convertir en número.
+    Number(bebe.peso_nacimiento) <= 0 ||
+    Number(bebe.peso_nacimiento) > 10000
   ) {
-    return "El peso al nacer debe ser un número positivo";
+    return "El peso al nacer debe ser un número positivo y no superar los 10 kg";
+  }
+
+  return null;
+};
+
+/**Compruebo que una fecha tenga formato correcto, exista y no sea futura.*/
+let validarFechaNoFutura = (fecha) => {
+  if (typeof fecha !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+    return "La fecha debe tener el formato YYYY-MM-DD";
+  }
+
+  //Compruebo que la fecha exista realmente.
+  let fechaComprobada = new Date(fecha + "T00:00:00Z");
+
+  if (
+    isNaN(fechaComprobada.getTime()) ||
+    fechaComprobada.toISOString().slice(0, 10) !== fecha
+  ) {
+    return "La fecha introducida no es válida";
+  }
+
+  //Obtengo la fecha de hoy utilizando la hora local del servidor.
+  let hoy = new Date();
+  let fechaHoy = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
+
+  if (fecha > fechaHoy) {
+    return "La fecha no puede ser posterior a hoy";
   }
 
   return null;
@@ -48,7 +66,7 @@ let validarBebe = (bebe) => {
 // Obtener todos los bebés
 let obtenerBebes = async (req, res) => {
   try {
-    let [bebes] = await obtenerBebesModelo();
+    let [bebes] = await obtenerBebesModelo(req.usuario.id); //Así solamente recupero los bebés del usuario que ha iniciado sesión.
 
     res.json({
       message: "Bebés obtenidos correctamente",
@@ -72,7 +90,7 @@ let obtenerBebeId = async (req, res) => {
   }
 
   try {
-    let [bebes] = await obtenerBebeIdModelo(req.params.id);
+    let [bebes] = await obtenerBebeIdModelo(req.params.id, req.usuario.id);
 
     if (bebes.length === 0) {
       return res.status(404).json({
@@ -104,7 +122,7 @@ let guardarBebe = async (req, res) => {
   }
 
   try {
-    let [resultado] = await crearBebe(req.body);
+    let [resultado] = await crearBebe(req.usuario.id, req.body);
 
     res.status(201).json({
       message: "Bebé creado correctamente",
@@ -124,8 +142,7 @@ let guardarBebe = async (req, res) => {
   }
 };
 
-//Actualizar los datos de un bebé 
-
+//Actualizar los datos de un bebé
 
 let actualizarBebe = async (req, res) => {
   //Comprobar que el ID del bebé sea un número entero positivo
@@ -138,11 +155,7 @@ let actualizarBebe = async (req, res) => {
   let bebe = req.body;
 
   //Definir los campos que se pueden modificar
-  let camposPermitidos = [
-    "nombre",
-    "fecha_nacimiento",
-    "peso_nacimiento",
-  ];
+  let camposPermitidos = ["nombre", "fecha_nacimiento", "peso_nacimiento"];
 
   let datosActualizados = {};
 
@@ -155,7 +168,8 @@ let actualizarBebe = async (req, res) => {
   }
 
   //Comprobar que se haya enviado al menos un campo válido
-  if (Object.keys(datosActualizados).length === 0) {//object.keys() coge un objeto y devuelve un array con los nombres de todas sus claves
+  if (Object.keys(datosActualizados).length === 0) {
+    //object.keys() coge un objeto y devuelve un array con los nombres de todas sus claves
     return res.status(400).json({
       message: "Debes enviar al menos un campo válido",
     });
@@ -177,45 +191,41 @@ let actualizarBebe = async (req, res) => {
     datosActualizados.nombre = datosActualizados.nombre.trim();
   }
 
-  //Comprobar el formato de la fecha solo si se ha enviado
+  //Comprobar la fecha solo si se quiere modificar.
   if (datosActualizados.fecha_nacimiento !== undefined) {
-    let fechaNacimiento = datosActualizados.fecha_nacimiento;
+    let errorFecha = validarFechaNoFutura(datosActualizados.fecha_nacimiento);
 
-    //La fecha debe tener el formato año-mes-día porque luego es con lo que trabaja mysql
-    if (
-      typeof fechaNacimiento !== "string" ||
-      !/^\d{4}-\d{2}-\d{2}$/.test(fechaNacimiento)
-    ) {
+    if (errorFecha) {
       return res.status(400).json({
-        message: "La fecha debe tener el formato YYYY-MM-DD",
-      });
-    }
-
-    //Comprobar que la fecha exista realmente y que no metan 30 de febrero por ejemplo
-    let fecha = new Date(fechaNacimiento + "T00:00:00Z");
-
-    if (isNaN(fecha.getTime())) {
-      return res.status(400).json({
-        message: "La fecha de nacimiento no es válida",
+        message: errorFecha,
       });
     }
   }
 
-  //Comprobar el peso solo si se quiere modificar
+  // Comprobar el peso solo si se quiere modificar
   if (datosActualizados.peso_nacimiento !== undefined) {
-    if (datosActualizados.peso_nacimiento === "" || Number(datosActualizados.peso_nacimiento) <= 0) {
+    if (
+      datosActualizados.peso_nacimiento === null ||
+      datosActualizados.peso_nacimiento === "" ||
+      !Number.isFinite(Number(datosActualizados.peso_nacimiento)) ||
+      Number(datosActualizados.peso_nacimiento) <= 0 ||
+      Number(datosActualizados.peso_nacimiento) > 10000
+    ) {
       return res.status(400).json({
-        message: "El peso al nacer debe ser un número positivo",
+        message:
+          "El peso al nacer debe ser un número mayor que 0 y no superar los 10 kg",
       });
     }
 
-    //Convertir el peso a número antes de enviarlo al modelo porque mysql espera un campo decimal
-    datosActualizados.peso_nacimiento = Number(datosActualizados.peso_nacimiento);
+    // Convertir el peso a número antes de enviarlo al modelo
+    datosActualizados.peso_nacimiento = Number(
+      datosActualizados.peso_nacimiento,
+    );
   }
 
   try {
     // Buscar el bebé para comprobar que existe
-    let [bebes] = await obtenerBebeIdModelo(req.params.id);
+    let [bebes] = await obtenerBebeIdModelo(req.params.id, req.usuario.id);
 
     if (bebes.length === 0) {
       return res.status(404).json({
@@ -224,7 +234,11 @@ let actualizarBebe = async (req, res) => {
     }
 
     // Enviar al modelo el ID y únicamente los campos que queremos modificar
-    await actualizarBebeModelo(req.params.id, datosActualizados);
+    await actualizarBebeModelo(
+      req.params.id,
+      req.usuario.id,
+      datosActualizados,
+    );
 
     // Informar de que la actualización se ha realizado correctamente
     res.json({
@@ -241,7 +255,6 @@ let actualizarBebe = async (req, res) => {
   }
 };
 
-
 // Eliminar un bebé
 let eliminarBebe = async (req, res) => {
   if (!validarId(req.params.id)) {
@@ -251,7 +264,7 @@ let eliminarBebe = async (req, res) => {
   }
 
   try {
-    let [resultado] = await eliminarBebeModelo(req.params.id);
+    let [resultado] = await eliminarBebeModelo(req.params.id, req.usuario.id);
 
     if (resultado.affectedRows === 0) {
       return res.status(404).json({

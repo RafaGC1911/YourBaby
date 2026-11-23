@@ -1,10 +1,11 @@
 let conexion = require("../configuracion/base_datos");
 
+//Crear una alimentación
 let crearAlimentacion = (alimentacion) => {
   let sql = `
   INSERT INTO alimentaciones
   (bebe_id, tipo, fecha_hora, cantidad_ml, observaciones)
-  VALUES(?, ?, ?, ?, ?)
+  VALUES (?, ?, ?, ?, ?)
   `;
 
   return conexion
@@ -18,29 +19,48 @@ let crearAlimentacion = (alimentacion) => {
     ]);
 };
 
-let obtenerAlimentaciones = () => {
-  let sql = `SELECT * FROM alimentaciones`;
-  return conexion.promise().query(sql);
-};
-
-let obtenerAlimentacionesPorBebe = (bebeId) => {
+//Comprobar que un bebé pertenece al usuario que ha iniciado sesión
+let comprobarBebeUsuario = (bebeId, usuarioId) => {
   let sql = `
-  SELECT * FROM alimentaciones
-  WHERE bebe_id = ?
+  SELECT id FROM bebes
+  WHERE id = ? AND usuario_id = ?
   `;
 
-  return conexion.promise().query(sql, [bebeId]);
+  return conexion.promise().query(sql, [bebeId, usuarioId]);
 };
 
-//Aquí en vez de método PUT voy a usar PATCH, ya que PUT necesita que el usuario rellene todos los campos y PATCH no
-let actualizarAlimentacion = (id, alimentacion) => {
+//Obtener todas las alimentaciones del usuario
+let obtenerAlimentaciones = (usuarioId) => {
+  let sql = `
+  SELECT alimentaciones.*
+  FROM alimentaciones
+  INNER JOIN bebes
+  ON alimentaciones.bebe_id = bebes.id
+  WHERE bebes.usuario_id = ?
+  `;
+
+  return conexion.promise().query(sql, [usuarioId]);
+};
+
+//Obtener las alimentaciones de un bebé comprobando su propietario
+let obtenerAlimentacionesPorBebe = (bebeId, usuarioId) => {
+  let sql = `
+  SELECT alimentaciones.*
+  FROM alimentaciones
+  INNER JOIN bebes
+  ON alimentaciones.bebe_id = bebes.id
+  WHERE alimentaciones.bebe_id = ?
+  AND bebes.usuario_id = ?
+  `;
+
+  return conexion.promise().query(sql, [bebeId, usuarioId]);
+};
+
+//Actualizar una alimentación comprobando que pertenece al usuario
+let actualizarAlimentacion = (id, usuarioId, alimentacion) => {
   let campos = [];
   let valores = [];
 
-  if (alimentacion.bebe_id !== undefined) {//Si existe este campo en la consulta lo añade al array campos y añade su valor al array valores
-    campos.push("bebe_id = ?");
-    valores.push(alimentacion.bebe_id);
-  }
   if (alimentacion.tipo !== undefined) {
     campos.push("tipo = ?");
     valores.push(alimentacion.tipo);
@@ -61,26 +81,39 @@ let actualizarAlimentacion = (id, alimentacion) => {
     valores.push(alimentacion.observaciones);
   }
 
-  let sql = `UPDATE alimentaciones SET ${campos.join(", ")} WHERE id = ?`;//Une los campos para crear una consulta
+  let sql = `
+  UPDATE alimentaciones
+  INNER JOIN bebes
+  ON alimentaciones.bebe_id = bebes.id
+  SET ${campos.join(", ")}
+  WHERE alimentaciones.id = ?
+  AND bebes.usuario_id = ?
+  `;
 
-  valores.push(id);
+  valores.push(id, usuarioId);
 
-  return conexion.promise().query(sql, valores);//Devuelve la sentencia sql y los valores para cada campo patcheado
+  return conexion.promise().query(sql, valores);
 };
 
-const eliminarAlimentacion = (id) => {
-    const sql = `
-        DELETE FROM alimentaciones
-        WHERE id = ?
-    `;
+//Eliminar una alimentación comprobando que pertenece al usuario
+let eliminarAlimentacion = (id, usuarioId) => {
+  let sql = `
+  DELETE alimentaciones
+  FROM alimentaciones
+  INNER JOIN bebes
+  ON alimentaciones.bebe_id = bebes.id
+  WHERE alimentaciones.id = ?
+  AND bebes.usuario_id = ?
+  `;
 
-    return conexion.promise().query(sql, [id]);
+  return conexion.promise().query(sql, [id, usuarioId]);
 };
 
 module.exports = {
   crearAlimentacion,
+  comprobarBebeUsuario,
   obtenerAlimentaciones,
   obtenerAlimentacionesPorBebe,
   actualizarAlimentacion,
-  eliminarAlimentacion
+  eliminarAlimentacion,
 };

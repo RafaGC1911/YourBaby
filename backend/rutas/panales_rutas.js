@@ -1,5 +1,6 @@
 let express = require("express");
 let router = express.Router();
+let verificarToken = require("../middleware/autenticacion");
 
 let {
     guardarPanal,
@@ -9,6 +10,7 @@ let {
     eliminarPanal
 } = require("../controladores/panales_controlador");
 
+router.use(verificarToken);
 
 router.post("/", guardarPanal);
 router.get("/", obtenerPanales);

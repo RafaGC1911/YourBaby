@@ -1,6 +1,7 @@
 let express = require("express");
 let router = express.Router();
-
+let verificarToken = require("../middleware/autenticacion");
+router.use(verificarToken);
 let {
   guardarAlimentacion,
   obtenerAlimentaciones,
