@@ -22,6 +22,9 @@ function App() {
   let [bebes, setBebes] = useState([]);
   let [mensaje, setMensaje] = useState("Cargando bebés...");
 
+  //Controlo si el formulario para añadir un bebé está desplegado.
+  let [mostrarFormularioBebe, setMostrarFormularioBebe] = useState(false);
+
   //Guardo que sección está abierta y el ID del bebé seleccionado.
   //Si tipo vale null, significa que no estamos dentro de ninguna sección.
   let [seccionActiva, setSeccionActiva] = useState({
@@ -138,6 +141,12 @@ function App() {
     }
   };
 
+  //Actualizo la lista después de registrar un bebé y cierro el formulario.
+  let registrarBebe = async () => {
+    await actualizarBebes();
+    setMostrarFormularioBebe(false);
+  };
+
   //Eliminar un bebé
   let eliminarBebe = async (id) => {
     setMensaje("");
@@ -238,9 +247,33 @@ function App() {
         {/*Si no hay ninguna sección abierta, muestro la pantalla principal.*/}
         {seccionActiva.tipo === null && (
           <div>
-            {/*FORMULARIO DE REGISTRO*/}
+            {/*ZONA PARA AÑADIR UN NUEVO BEBÉ*/}
             <section className="seccion-formulario">
-              <FormularioBebe alRegistrar={actualizarBebes} />
+              <div className="cabecera-formulario-bebe">
+                <div>
+                  <h2>Tu familia</h2>
+                  <p>Añade y gestiona los perfiles de tus pequeños.</p>
+                </div>
+
+                {/*Cuando ya hay bebés registrados, permito mostrar u ocultar el formulario.*/}
+                {bebes.length > 0 && (
+                  <button
+                    type="button"
+                    className="boton-anadir-bebe"
+                    aria-expanded={mostrarFormularioBebe}
+                    onClick={() =>
+                      setMostrarFormularioBebe(!mostrarFormularioBebe)
+                    }
+                  >
+                    {mostrarFormularioBebe ? "Cancelar" : "+ Añadir bebé"}
+                  </button>
+                )}
+              </div>
+
+              {/*Si todavía no hay bebés, muestro el formulario para facilitar el primer registro.*/}
+              {(mostrarFormularioBebe || bebes.length === 0) && (
+                <FormularioBebe alRegistrar={registrarBebe} />
+              )}
             </section>
 
             {/*TARJETAS DE LOS BEBÉS*/}
