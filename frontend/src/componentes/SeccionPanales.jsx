@@ -102,7 +102,9 @@ function SeccionPanales(props) {
           <p>Registros de {props.nombreBebe}</p>
         </div>
 
-        <button onClick={props.alCerrar}>Volver</button>
+        <button type="button" className="boton-cerrar" onClick={props.alCerrar}>
+          Volver
+        </button>
       </div>
 
       <FormularioPanal bebeId={props.bebeId} alRegistrar={obtenerPanales} />
