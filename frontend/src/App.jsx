@@ -270,7 +270,7 @@ function App() {
                 )}
               </div>
 
-              {/*Si todavía no hay bebés, muestro el formulario para facilitar el primer registro.*/}
+              {/*Si todavía no hay bebés, muestro el formulario.*/}
               {(mostrarFormularioBebe || bebes.length === 0) && (
                 <FormularioBebe alRegistrar={registrarBebe} />
               )}
