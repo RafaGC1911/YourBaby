@@ -80,11 +80,11 @@ function FormularioEdicionBebe(props) {
         );
       }
 
-      setMensaje("Los cambios se han guardado correctamente.");
-      setTipoMensaje("exito");
+      //Actualizo la lista de bebés en App.jsx.
+      await props.alGuardar();
 
-      //Avisar a App.jsx para que actualice la lista de bebés.
-      props.alGuardar();
+      //Vuelvo a la pantalla principal después de guardar correctamente.
+      props.alCancelar();
     } catch (error) {
       console.error("Error al actualizar el bebé:", error);
       setMensaje(error.message || "No se pudieron guardar los cambios.");
@@ -103,7 +103,9 @@ function FormularioEdicionBebe(props) {
       {mensaje !== "" && (
         <p
           className={
-            tipoMensaje === "error" ? "mensaje-error" : "mensaje-exito"
+            tipoMensaje === "error"
+              ? "mensaje mensaje-error"
+              : "mensaje mensaje-exito"
           }
         >
           {mensaje}
@@ -140,11 +142,13 @@ function FormularioEdicionBebe(props) {
           />
         </label>
 
-        <button type="submit">Guardar cambios</button>
+        <div className="acciones-edicion-bebe">
+          <button type="submit">Guardar cambios</button>
 
-        <button type="button" onClick={props.alCancelar}>
-          Cancelar
-        </button>
+          <button type="button" onClick={props.alCancelar}>
+            Cancelar
+          </button>
+        </div>
       </form>
     </section>
   );

@@ -1093,3 +1093,45 @@ button {
   background-color: var(--color-fondo);
   color: var(--color-marron-oscuro);
 }
+
+/*FORMULARIO DE EDICIÓN DE BEBÉ*/
+.formulario-bebe {
+  padding: 24px;
+  margin-top: 15px;
+  border: 1px solid var(--color-beige);
+  border-radius: 12px;
+  background-color: var(--color-fondo);
+}
+
+/*Organizo los campos del formulario verticalmente*/
+.formulario-bebe-campos {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/*Coloco los botones uno al lado del otro*/
+.acciones-edicion-bebe {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/*Mantengo un tamaño adecuado para ambos botones*/
+.acciones-edicion-bebe button {
+  min-width: 150px;
+}
+
+/*Adapto el formulario a pantallas pequeñas*/
+@media (max-width: 600px) {
+  .formulario-bebe {
+    padding: 16px;
+  }
+
+  .acciones-edicion-bebe button {
+    flex: 1;
+    min-width: 0;
+  }
+}
