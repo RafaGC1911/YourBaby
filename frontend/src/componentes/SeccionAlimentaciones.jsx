@@ -119,15 +119,15 @@ function SeccionAlimentaciones(props) {
 
   return (
     <section className="seccion-alimentaciones">
-      {/*Cabecera de la sección*/}
-      <div className="cabecera-alimentaciones">
+      {/*Cabecera común de las secciones de seguimiento*/}
+      <div className="cabecera-seccion">
         <div>
           <h2>Alimentaciones</h2>
           <p>Historial de alimentación de {props.nombreBebe}</p>
         </div>
 
         <button type="button" className="boton-cerrar" onClick={props.alCerrar}>
-          Cerrar
+          Volver
         </button>
       </div>
 
