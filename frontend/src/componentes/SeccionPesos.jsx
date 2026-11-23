@@ -87,11 +87,16 @@ function SeccionPesos(props) {
 
   return (
     <section className="seccion-pesos">
-      <h2>Control de peso de {props.nombreBebe}</h2>
+      <div className="cabecera-seccion">
+        <div>
+          <h2>Control de peso</h2>
+          <p>Seguimiento del peso de {props.nombreBebe}</p>
+        </div>
 
-      <button type="button" onClick={props.alCerrar}>
-        Volver
-      </button>
+        <button type="button" className="boton-cerrar" onClick={props.alCerrar}>
+          Volver
+        </button>
+      </div>
 
       <FormularioPeso
         bebeId={props.bebeId}
