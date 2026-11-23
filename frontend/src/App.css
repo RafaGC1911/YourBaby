@@ -1186,3 +1186,141 @@ button {
     width: 100%;
   }
 }
+
+
+/*MEJORA VISUAL DE LOS HISTORIALES*/
+
+/*Unifico la distribución de las tarjetas de los cuatro historiales.*/
+.lista-alimentaciones,
+.lista-suenos,
+.lista-panales,
+.lista-pesos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+
+/*Doy a todos los registros el mismo aspecto y separo sus datos de las acciones.*/
+.tarjeta-alimentacion,
+.tarjeta-sueno,
+.tarjeta-panal,
+.tarjeta-peso {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  min-height: 100%;
+  margin: 0;
+  padding: 20px;
+  background-color: var(--color-superficie);
+  border: 1px solid var(--color-beige);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(73, 61, 50, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/*Resalto ligeramente la tarjeta al pasar el ratón, sin distraer del contenido.*/
+.tarjeta-alimentacion:hover,
+.tarjeta-sueno:hover,
+.tarjeta-panal:hover,
+.tarjeta-peso:hover {
+  border-color: var(--color-arena);
+  box-shadow: 0 4px 12px rgba(73, 61, 50, 0.08);
+}
+
+/*Mantengo los textos ordenados y con una separación uniforme.*/
+.tarjeta-alimentacion p,
+.tarjeta-sueno p,
+.tarjeta-panal p,
+.tarjeta-peso p {
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+
+/*Destaco los nombres de los datos, como Fecha, Inicio o Peso.*/
+.tarjeta-alimentacion strong,
+.tarjeta-sueno strong,
+.tarjeta-panal strong,
+.tarjeta-peso strong {
+  color: var(--color-marron-oscuro);
+}
+
+/*Coloco las acciones al final de cada tarjeta y dejo espacio entre botones.*/
+.acciones-alimentacion,
+.acciones-sueno,
+.acciones-panal,
+.acciones-peso {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+/*Hago que los botones de editar y eliminar tengan una jerarquía visual secundaria.*/
+.acciones-alimentacion button,
+.acciones-sueno button,
+.acciones-panal > button,
+.acciones-peso button {
+  flex: 1;
+  min-width: 100px;
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+/*Identifico el botón de eliminar con el color de error para evitar confusiones.*/
+.acciones-sueno button:last-child,
+.acciones-panal > button:last-of-type,
+.acciones-peso button:last-child {
+  background-color: var(--color-error);
+}
+
+.acciones-sueno button:last-child:hover,
+.acciones-panal > button:last-of-type:hover,
+.acciones-peso button:last-child:hover {
+  background-color: #912018;
+}
+
+/*Evito que la lista de sueño quede visualmente distinta al resto de historiales.*/
+.lista-suenos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+/*Separo los títulos de los historiales de sus tarjetas.*/
+.historial-alimentaciones h3,
+.historial-suenos h3,
+.historial-panales h3,
+.historial-pesos h3 {
+  margin-top: 0;
+  margin-bottom: 18px;
+  color: var(--color-marron-oscuro);
+}
+
+/*Adapto las tarjetas y sus acciones a pantallas pequeñas.*/
+@media (max-width: 600px) {
+  .lista-alimentaciones,
+  .lista-suenos,
+  .lista-panales,
+  .lista-pesos {
+    grid-template-columns: 1fr;
+  }
+
+  .tarjeta-alimentacion,
+  .tarjeta-sueno,
+  .tarjeta-panal,
+  .tarjeta-peso {
+    padding: 16px;
+  }
+
+  .acciones-alimentacion,
+  .acciones-sueno,
+  .acciones-panal,
+  .acciones-peso {
+    width: 100%;
+  }
+}
