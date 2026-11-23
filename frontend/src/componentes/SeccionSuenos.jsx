@@ -151,8 +151,8 @@ function SeccionSuenos(props) {
           <p>Historial de sueño de {props.nombreBebe}</p>
         </div>
 
-        <button type="button" onClick={props.alCerrar}>
-          Cerrar
+        <button type="button" className="boton-cerrar" onClick={props.alCerrar}>
+          Volver
         </button>
       </div>
 
